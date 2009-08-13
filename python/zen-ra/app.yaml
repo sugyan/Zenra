@@ -1,0 +1,16 @@
+application: zen-ra
+version: wave-robot
+runtime: python
+api_version: 1
+
+handlers:
+- url: /(.*\.png)
+  static_files: static/\1
+  upload: static/(.*\.png)
+
+- url: /_wave/.*
+  script: robot.py
+
+- url: /.*
+  script: main.py
+  
