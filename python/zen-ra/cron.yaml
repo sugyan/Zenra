@@ -1,0 +1,19 @@
+cron:
+- description: update friends
+  url: /bot/twitter?action=friends
+  schedule: every 5 minutes
+- description: update followers
+  url: /bot/twitter?action=followers
+  schedule: every 5 minutes
+- description: create friend
+  url: /bot/twitter?action=create
+  schedule: every 5 minutes
+- description: destroy friend
+  url: /bot/twitter?action=destroy
+  schedule: every 5 minutes
+- description: update myself
+  url: /bot/twitter?action=update
+  schedule: every 2 hours
+- description: zenrize friends' status
+  url: /bot/twitter?action=zenrize
+  schedule: every 30 minutes

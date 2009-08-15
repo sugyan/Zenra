@@ -3,11 +3,16 @@
 
 from xml.etree import ElementTree
 import urllib
+import yaml
 
 
 class Zenra:
     def __init__(self):
-        self.appid = '****'
+        # config.yamlから設定情報を取得
+        #     ---
+        #     appid: ********
+        config_data = yaml.load(open('../config.yaml'))
+        self.appid = config_data['appid']
         self.url   = 'http://jlp.yahooapis.jp/DAService/V1/parse'
         
     def zenrize(self, sentence):
