@@ -165,15 +165,20 @@ class TwitBot:
         logging.debug(result.content)
         if result.status_code == 200:
             statuses = simplejson.loads(result.content)
-            for status in statuses:
+
+            def judge(status):
                 # 自分の発言は除く
                 if status['user']['screen_name'] == self.bot_config['username']:
-                    statuses.remove(status)
+                    return False
                 # 非公開の発言も除く
                 if status['user']['protected']:
-                    statuses.remove(status)
+                    return False
+                # それ以外のものはOK
+                return True
+
             # 残ったものからランダムに選択して全裸にする
-            status = random.choice(statuses)
+            candidate = filter(judge, statuses)
+            status = random.choice(candidate)
             text = status['text']
             self.update(status = u'@%s が全裸で言った: %s' % (
                     status['user']['screen_name'],
