@@ -5,4 +5,5 @@ from google.appengine.ext import db
 
 
 class IDS(db.Model):
-    ids = db.ListProperty(int)
+    friend   = db.BooleanProperty()
+    follower = db.BooleanProperty()
