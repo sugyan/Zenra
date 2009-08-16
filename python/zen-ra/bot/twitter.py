@@ -48,7 +48,7 @@ class TwitBot:
                     keys.remove(key_name)
                 # フォローしている筈だったのが外れている場合
                 else:
-                    id.friend = None
+                    id.friend = False
                     id.put()
             # 新規にフォローすべきidとして登録
             ids = []
@@ -79,7 +79,7 @@ class TwitBot:
                     keys.remove(key_name)
                 # フォローされている筈だったのが外されている場合
                 else:
-                    id.follower = None
+                    id.follower = False
                     id.put()
             # 新規にフォローされたidとして登録
             ids = []
@@ -91,19 +91,18 @@ class TwitBot:
                 ids.append(id)
             db.put(ids)
 
+    # 管理しているidを全消去する
     def reset(self):
         db.delete(IDS.all())
 
+    # 新たにフォローする
     def create(self):
         # フォローすべきidの抽出
         query = IDS.all()
         query.filter('follower =', True)
-        query.filter('friend =',   None)
+        query.filter('friend =',   False)
         id = query.get()
         if id:
-            # 内部データの更新
-            id.friend = True
-            id.put()
             # APIへの送信
             url = 'http://twitter.com/friendships/create/%s.json' % (id.key().name()[3:])
             result = urlfetch.fetch(
@@ -113,16 +112,18 @@ class TwitBot:
                 )
             logging.debug(result.status_code)
             logging.debug(result.content)
+            # 内部データの更新
+            id.friend = True
+            id.put()
 
+    # フォローを外す
     def destroy(self):
         # リムーブすべきidの抽出
         query = IDS.all()
         query.filter('friend =',   True)
-        query.filter('follower =', None)
+        query.filter('follower =', False)
         id = query.get()
         if id:
-            # 内部データの更新
-            id.delete()
             # APIへの送信
             url = 'http://twitter.com/friendships/destroy/%s.json' % (id.key().name()[3:])
             result = urlfetch.fetch(
@@ -132,7 +133,10 @@ class TwitBot:
                 )
             logging.debug(result.status_code)
             logging.debug(result.content)
+            # 内部データの更新
+            id.delete()
 
+    # 何かをつぶやく
     def update(self, status = None):
         count = Statuses.all().count()
         if not status:
@@ -150,6 +154,7 @@ class TwitBot:
         logging.debug(result.status_code)
         logging.debug(result.content)
 
+    # 発言を拾って全裸にする
     def zenrize(self):
         url = 'http://twitter.com/statuses/friends_timeline.json'
         result = urlfetch.fetch(
@@ -160,10 +165,14 @@ class TwitBot:
         logging.debug(result.content)
         if result.status_code == 200:
             statuses = simplejson.loads(result.content)
-            # 自分の発言は除く
             for status in statuses:
+                # 自分の発言は除く
                 if status['user']['screen_name'] == self.bot_config['username']:
                     statuses.remove(status)
+                # 非公開の発言も除く
+                if status['user']['protected']:
+                    statuses.remove(status)
+            # 残ったものからランダムに選択して全裸にする
             status = random.choice(statuses)
             text = status['text']
             self.update(status = u'@%s が全裸で言った: %s' % (
