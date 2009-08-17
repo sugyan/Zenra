@@ -55,7 +55,7 @@ class TwitBot:
             for key in keys:
                 id = IDS.get_by_key_name(key)
                 if id == None:
-                    id = IDS(key_name = key)
+                    id = IDS(key_name = key, follower = False)
                 id.friend = True
                 ids.append(id)
             db.put(ids)
@@ -86,7 +86,7 @@ class TwitBot:
             for key in keys:
                 id = IDS.get_by_key_name(key)
                 if id == None:
-                    id = IDS(key_name = key)
+                    id = IDS(key_name = key, friend = False)
                 id.follower = True
                 ids.append(id)
             db.put(ids)
