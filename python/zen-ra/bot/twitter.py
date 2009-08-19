@@ -4,6 +4,7 @@
 import base64
 import logging
 import random
+import re
 import yaml
 import urllib
 from model.ids import IDS
@@ -173,14 +174,22 @@ class TwitBot:
                 # 非公開の発言も除く
                 if status['user']['protected']:
                     return False
+                if re.search('.*RT[ :].*@\w+.*', status['text']):
+                    return False
                 # それ以外のものはOK
                 return True
 
             # 残ったものからランダムに選択して全裸にする
             candidate = filter(judge, statuses)
-            status = random.choice(candidate)
-            text = status['text']
-            self.update(status = u'@%s が全裸で言った: %s' % (
-                    status['user']['screen_name'],
-                    Zenra().zenrize(text).decode('utf-8'),
-                    ))
+            random.shuffle(candidate)
+            zenra = Zenra()
+            for status in candidate:
+                text = zenra.zenrize(status['text']).decode('utf-8')
+                # うまく全裸にできたものだけ投稿
+                if re.search(u'全裸で', text):
+                    logging.debug(text)
+                    self.update(status = u'@%s が全裸で言った: %s' % (
+                            status['user']['screen_name'],
+                            text,
+                            ))
+                    break
