@@ -16,4 +16,4 @@ cron:
   schedule: every 3 hours
 - description: zenrize friends' status
   url: /bot/twitter?action=zenrize
-  schedule: every 37 minutes
+  schedule: every 23 minutes

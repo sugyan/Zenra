@@ -157,13 +157,12 @@ class TwitBot:
 
     # 発言を拾って全裸にする
     def zenrize(self):
-        url = 'http://twitter.com/statuses/friends_timeline.json'
+        url = 'http://twitter.com/statuses/friends_timeline.json??count=50'
         result = urlfetch.fetch(
             url     = url,
             headers = self.auth_header,
             )
         logging.debug(result.status_code)
-        logging.debug(result.content)
         if result.status_code == 200:
             statuses = simplejson.loads(result.content)
 
@@ -174,7 +173,11 @@ class TwitBot:
                 # 非公開の発言も除く
                 if status['user']['protected']:
                     return False
-                if re.search('.*RT[ :].*@\w+.*', status['text']):
+                # RTっぽい発言も除く
+                if re.search('RT[ :].*@\w+', status['text']):
+                    return False
+                # ハッシュタグっぽいものを含んでいる発言も除く
+                if re.search(' #\w+', status['text']):
                     return False
                 # それ以外のものはOK
                 return True
