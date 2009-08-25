@@ -138,13 +138,14 @@ class TwitBot:
             id.delete()
 
     # 何かをつぶやく
-    def update(self, status = None):
+    def update(self, status = None, in_reply_to = None):
         count = Statuses.all().count()
         if not status:
             status = random.choice(Statuses.all().fetch(1000)).status
         url  = 'http://twitter.com/statuses/update.json'
         data = urllib.urlencode({
                 'status' : status.encode('utf-8'),
+                'in_reply_to_status_id' : in_reply_to,
                 })
         result = urlfetch.fetch(
             url     = url,
@@ -194,5 +195,5 @@ class TwitBot:
                     self.update(status = u'@%s が全裸で言った: %s' % (
                             status['user']['screen_name'],
                             text,
-                            ))
+                            ), in_reply_to = status['id'])
                     break
