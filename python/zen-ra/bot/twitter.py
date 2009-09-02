@@ -7,12 +7,16 @@ import random
 import re
 import yaml
 import urllib
+from datetime import datetime
 from model.ids import IDS
 from model.statuses import Statuses
 from django.utils import simplejson
+from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 from google.appengine.ext import db
 from zenra import Zenra
+
+ZENRIZE_COUNT = 'zenrize_count'
 
 
 class TwitBot:
@@ -158,7 +162,12 @@ class TwitBot:
 
     # 発言を拾って全裸にする
     def zenrize(self):
-        url = 'http://twitter.com/statuses/friends_timeline.json??count=50'
+        cache = memcache.decr(ZENRIZE_COUNT)
+        if cache:
+            logging.debug('count: %d' % cache)
+            return
+
+        url = 'http://twitter.com/statuses/friends_timeline.json?count=50'
         result = urlfetch.fetch(
             url     = url,
             headers = self.auth_header,
@@ -166,6 +175,15 @@ class TwitBot:
         logging.debug(result.status_code)
         if result.status_code == 200:
             statuses = simplejson.loads(result.content)
+
+            # 次の実行時間を決定する
+            format = '%a %b %d %H:%M:%S +0000 %Y'
+            first = datetime.strptime(statuses[ 0]['created_at'], format)
+            last  = datetime.strptime(statuses[-1]['created_at'], format)
+            logging.debug('first : %s' % first)
+            logging.debug('last  : %s' % last)
+            logging.debug(first - last)
+            memcache.set(ZENRIZE_COUNT, (first - last).seconds / 60)
 
             def judge(status):
                 # 自分の発言は除く
