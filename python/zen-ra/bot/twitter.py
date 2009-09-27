@@ -106,17 +106,20 @@ class TwitBot:
         query = IDS.all()
         query.filter('follower =', True)
         query.filter('friend =',   False)
-        id = query.get()
-        if id:
-            # APIへの送信
-            url = 'http://twitter.com/friendships/create/%s.json' % (id.key().name()[3:])
-            result = urlfetch.fetch(
-                url     = url,
-                method  = urlfetch.POST,
-                headers = self.auth_header,
-                )
-            logging.debug(result.status_code)
-            logging.debug(result.content)
+        ids = query.fetch(100)
+        if len(ids) == 0:
+            return
+        # APIへの送信
+        id = random.choice(ids)
+        url = 'http://twitter.com/friendships/create/%s.json' % (id.key().name()[3:])
+        result = urlfetch.fetch(
+            url     = url,
+            method  = urlfetch.POST,
+            headers = self.auth_header,
+            )
+        logging.debug(result.status_code)
+        logging.debug(result.content)
+        if result.status_code == 200:
             # 内部データの更新
             id.friend = True
             id.put()
@@ -127,17 +130,20 @@ class TwitBot:
         query = IDS.all()
         query.filter('friend =',   True)
         query.filter('follower =', False)
-        id = query.get()
-        if id:
-            # APIへの送信
-            url = 'http://twitter.com/friendships/destroy/%s.json' % (id.key().name()[3:])
-            result = urlfetch.fetch(
-                url     = url,
-                method  = urlfetch.POST,
-                headers = self.auth_header,
-                )
-            logging.debug(result.status_code)
-            logging.debug(result.content)
+        ids = query.fetch(100)
+        if len(ids) == 0:
+            return
+        # APIへの送信
+        id = random.choice(ids)
+        url = 'http://twitter.com/friendships/destroy/%s.json' % (id.key().name()[3:])
+        result = urlfetch.fetch(
+            url     = url,
+            method  = urlfetch.POST,
+            headers = self.auth_header,
+            )
+        logging.debug(result.status_code)
+        logging.debug(result.content)
+        if result.status_code == 200:
             # 内部データの更新
             id.delete()
 
