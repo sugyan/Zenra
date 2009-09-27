@@ -204,6 +204,9 @@ class TwitBot:
                 # ハッシュタグっぽいものを含んでいる発言も除く
                 if re.search(' #\w+', status['text']):
                     return False
+                # 既に「全裸で」が含まれている発言も除く
+                if re.search(u'全裸で', status['text']):
+                    return False
                 # それ以外のものはOK
                 return True
 
