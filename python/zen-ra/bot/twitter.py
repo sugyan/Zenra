@@ -173,7 +173,7 @@ class TwitBot:
             logging.debug('count: %d' % cache)
             return
 
-        url = 'http://twitter.com/statuses/friends_timeline.json?count=50'
+        url = 'http://twitter.com/statuses/friends_timeline.json?count=100'
         result = urlfetch.fetch(
             url     = url,
             headers = self.auth_header,
