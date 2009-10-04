@@ -8,11 +8,13 @@ MORPHEM_LIST = '{urn:yahoo:jp:jlp:DAService}MorphemList'
 SURFACE      = '{urn:yahoo:jp:jlp:DAService}Surface'
 FEATURE      = '{urn:yahoo:jp:jlp:DAService}Feature'
 NOUN = u'名詞'
+SURU = u'助動詞する'
 NIGHT = u'夜の'.encode('utf-8')
 MIDNIGHT = u'真夜中の'.encode('utf-8')
 
 from xml.etree import ElementTree
 import random
+import re
 import urllib
 import yaml
 
@@ -49,11 +51,23 @@ class Zenra:
                         })
             # 先頭が名詞で始まる文節を見つける
             if morphem_list[0]['feature'][0] == NOUN:
-                # 50%の確率で「夜の」を挿入
-                if random.randint(0, 1) == 0:
+                should_insert = True
+                try:
+                    # URLのような日本語でないと思われる文字列は除外
+                    if re.match('[\x00-\x7F]+', morphem_list[0]['surface']):
+                        should_insert = False
+                    # 「助動詞する」が続く場合は除外
+                    if morphem_list[1]['feature'][1] == SURU:
+                        should_insert = False
+                    # 50%の確率で「夜の」を挿入
+                    if random.randint(0, 1) == 0:
+                        should_insert = False
+                except IndexError:
+                    pass
+                if should_insert:
                     insert = NIGHT
-                    # 10%の確率で「真夜中の」に
-                    if random.randint(0, 10) == 0:
+                    # 5%の確率で「真夜中の」に
+                    if random.randint(0, 20) == 0:
                         insert = MIDNIGHT
                     text += insert
             for morphem in morphem_list:

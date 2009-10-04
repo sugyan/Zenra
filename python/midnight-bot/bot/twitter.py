@@ -169,8 +169,8 @@ class TwitBot:
     # 発言を拾って全裸にする
     def zenrize(self):
         cache = memcache.decr(ZENRIZE_COUNT)
-        logging.debug('count: %d' % cache)
-        if cache > 0:
+        if cache:
+            logging.debug('count: %d' % cache)
             return
 
         url = 'http://twitter.com/statuses/friends_timeline.json?count=50'
