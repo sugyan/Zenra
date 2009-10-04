@@ -1,0 +1,21 @@
+application: midnight-bot
+version: bot
+runtime: python
+api_version: 1
+
+handlers:
+- url: /remote_api
+  script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
+  login: admin
+
+- url: /(.*\.png)
+  static_files: static/\1
+  upload: static/(.*\.png)
+
+- url: /bot/.*
+  script: bot/bot.py
+  login: admin
+
+- url: /.*
+  script: main.py
+  
