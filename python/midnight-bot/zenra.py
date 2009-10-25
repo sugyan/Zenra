@@ -9,6 +9,7 @@ SURFACE      = '{urn:yahoo:jp:jlp:DAService}Surface'
 FEATURE      = '{urn:yahoo:jp:jlp:DAService}Feature'
 NOUN = u'名詞'
 SURU = u'助動詞する'
+DA   = u'助動詞だ'
 NIGHT = u'夜の'.encode('utf-8')
 MIDNIGHT = u'真夜中の'.encode('utf-8')
 
@@ -58,6 +59,8 @@ class Zenra:
                         should_insert = False
                     # 「助動詞する」が続く場合は除外
                     if morphem_list[1]['feature'][1] == SURU:
+                        should_insert = False
+                    if morphem_list[1]['feature'][1] == DA:
                         should_insert = False
                     # 50%の確率で「夜の」を挿入
                     if random.randint(0, 1) == 0:
