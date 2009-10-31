@@ -44,7 +44,7 @@ async {
     while (1) {
         my $sleep = 60;
         eval {
-            my $statuses = $twitter->friends_timeline({ count => 50 });
+            my $statuses = $twitter->friends_timeline({ count => 100 });
             if (@$statuses > 1) {
                 # 最新と最古のstatusの時差を計測、次の更新へのwait時間とする
                 my $oldest = str2time($statuses->[-1]{created_at});
