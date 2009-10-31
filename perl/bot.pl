@@ -1,4 +1,3 @@
-#!/opt/local/bin/perl
 use strict;
 use warnings;
 
@@ -7,7 +6,7 @@ use Coro::AnyEvent;
 use Config::Any::YAML;
 use Date::Parse 'str2time';
 use Encode 'encode_utf8';
-use List::Util 'shuffle';
+use List::Util qw/max shuffle/;
 use Net::Twitter::Lite;
 use Text::MeCab;
 
@@ -50,7 +49,7 @@ async {
                 # 最新と最古のstatusの時差を計測、次の更新へのwait時間とする
                 my $oldest = str2time($statuses->[-1]{created_at});
                 my $newest = str2time($statuses->[ 0]{created_at});
-                $sleep = $newest - $oldest;
+                $sleep = max($sleep, $newest - $oldest);
             }
           ZENRIZE:
             for my $status (shuffle @$statuses) {
