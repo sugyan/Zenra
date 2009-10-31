@@ -20,6 +20,7 @@ my $cv = AE::cv;
 # 5分毎にfollower/friendsを更新
 async {
     while (1) {
+        Coro::AnyEvent::sleep 300;
         eval {
             my $friends   = $twitter->friends_ids;
             my $followers = $twitter->followers_ids;
@@ -37,7 +38,6 @@ async {
                 $twitter->destroy_friend($id);
             }
         };
-        Coro::AnyEvent::sleep 300;
     }
 };
 # friends_timelineからランダムに発言を拾って全裸にする
@@ -45,7 +45,7 @@ async {
     while (1) {
         my $sleep = 60;
         eval {
-            my $statuses = $twitter->friends_timeline({ count => 100 });
+            my $statuses = $twitter->friends_timeline({ count => 50 });
             if (@$statuses > 1) {
                 # 最新と最古のstatusの時差を計測、次の更新へのwait時間とする
                 my $oldest = str2time($statuses->[-1]{created_at});
@@ -76,12 +76,15 @@ async {
 # 独り言
 async {
     while (1) {
+        Coro::AnyEvent::sleep(7200 + rand 7200);
         eval {
-            $twitter->update('動作テスト中です');
+            my $data = Config::Any::YAML->load('update.yaml');
+            my $status = (shuffle @{$data->{self}})[0];
+            $twitter->update($status);
         };
-        Coro::AnyEvent::sleep(rand 60 * 60 * 3);
     }
 };
+# replyへの反応もできるようにする？
 
 $cv->recv;
 
