@@ -1,3 +1,4 @@
+#!perl
 use strict;
 use warnings;
 
@@ -58,6 +59,7 @@ async {
                 next if $status->{user}{protected};
                 next if $text =~ / RT[ :] .* \@ \w+ /xms;
                 next if $text =~ / \#.+ /xms;
+                next if $text =~ / 全裸で /xms;
 
                 my $zenrized = zenrize_all($text);
                 if ($text ne $zenrized) {
