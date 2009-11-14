@@ -173,7 +173,7 @@ class TwitBot:
             logging.debug('count: %d' % cache)
             return
 
-        url = 'http://twitter.com/statuses/friends_timeline.json?count=100'
+        url = 'http://twitter.com/statuses/friends_timeline.json?count=150'
         result = urlfetch.fetch(
             url     = url,
             headers = self.auth_header,
@@ -189,7 +189,7 @@ class TwitBot:
             logging.debug('first : %s' % first)
             logging.debug('last  : %s' % last)
             logging.debug(first - last)
-            memcache.set(ZENRIZE_COUNT, (first - last).seconds / 60)
+            memcache.set(ZENRIZE_COUNT, (first - last).seconds * 2 / 60)
 
             def judge(status):
                 # 自分の発言は除く
