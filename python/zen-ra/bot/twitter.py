@@ -202,7 +202,7 @@ class TwitBot:
                 if re.search('RT[ :].*@\w+', status['text']):
                     return False
                 # ハッシュタグっぽいものを含んでいる発言も除く
-                if re.search(' #\w+', status['text']):
+                if re.search('#\w+', status['text']):
                     return False
                 # 既に「全裸で」が含まれている発言も除く
                 if re.search(u'全裸で', status['text']):
@@ -224,3 +224,6 @@ class TwitBot:
                             text,
                             ), in_reply_to = status['id'])
                     break
+        # 400が返ってきたときは10分間黙るようにしてみる
+        elif result.status_code == 400:
+            memcache.set(ZENRIZE_COUNT, 10)
