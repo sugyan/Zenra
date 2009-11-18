@@ -58,7 +58,7 @@ async {
                 next if $status->{user}{screen_name} eq 'zenra_bot2';
                 next if $status->{user}{protected};
                 next if $text =~ / RT[ :] .* \@ \w+ /xms;
-                next if $text =~ / \#.+ /xms;
+                next if $text =~ / [\#＃]\w+ /xms;
                 next if $text =~ / 全裸で /xms;
 
                 my $zenrized = zenrize_all($text);
