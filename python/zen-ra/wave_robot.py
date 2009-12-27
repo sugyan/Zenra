@@ -1,9 +1,11 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import logging
+import re
 import yaml
 from zenra import Zenra
+from waveapi import document
 from waveapi import events
 from waveapi import model
 from waveapi import robot
@@ -12,6 +14,9 @@ from waveapi import robot
 def OnBlipSubmitted(properties, context):
     blip = context.GetBlipById(properties['blipId'])
     text = blip.GetDocument().GetText()
+    # 既に全裸になっていれば何もしない
+    if re.search(u'全裸で', text):
+        return
     # config.yamlから設定情報を取得
     #     ---
     #     robot:
@@ -21,10 +26,18 @@ def OnBlipSubmitted(properties, context):
     zenra_text = zenra.zenrize(text).decode('utf-8')
     logging.debug(text)
     logging.debug(zenra_text)
+
     # 全裸になってなければ何もしない
     if text == zenra_text:
         return
-    blip.GetDocument().SetText(zenra_text)
+
+    for match in re.finditer(u'全裸で', zenra_text):
+        blip.GetDocument().InsertText(match.start(), u'全裸で')
+        blip.GetDocument().SetAnnotation(
+            document.Range(match.start(), match.end()),
+            'style/fontWeight',
+            'bold',
+            )
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.DEBUG)
