@@ -44,26 +44,9 @@ class TwitBot:
         logging.debug(result.status_code)
         logging.debug(result.content)
         if result.status_code == 200:
-            keys = ["id:%d" % (id) for id in simplejson.loads(result.content)]
-            # 既に登録されているidかどうかをチェックする
-            for id in IDS.all().filter('friend =', True):
-                key_name = id.key().name()
-                # 登録されていれば処理の必要なし
-                if key_name in keys:
-                    keys.remove(key_name)
-                # フォローしている筈だったのが外れている場合
-                else:
-                    id.friend = False
-                    id.put()
-            # 新規にフォローすべきidとして登録
-            ids = []
-            for key in keys:
-                id = IDS.get_by_key_name(key)
-                if id == None:
-                    id = IDS(key_name = key, follower = False)
-                id.friend = True
-                ids.append(id)
-            db.put(ids)
+            ids = IDS.get()
+            ids.friends = result.content
+            ids.put()
 
     # 自分のfollowersのデータを更新する
     def followers(self):
@@ -75,77 +58,42 @@ class TwitBot:
         logging.debug(result.status_code)
         logging.debug(result.content)
         if result.status_code == 200:
-            keys = ["id:%d" % (id) for id in simplejson.loads(result.content)]
-            # 既に登録されているidかどうかをチェックする
-            for id in IDS.all().filter('follower =', True):
-                key_name = id.key().name()
-                # 登録されていれば処理の必要なし
-                if key_name in keys:
-                    keys.remove(key_name)
-                # フォローされている筈だったのが外されている場合
-                else:
-                    id.follower = False
-                    id.put()
-            # 新規にフォローされたidとして登録
-            ids = []
-            for key in keys:
-                id = IDS.get_by_key_name(key)
-                if id == None:
-                    id = IDS(key_name = key, friend = False)
-                id.follower = True
-                ids.append(id)
-            db.put(ids)
+            ids = IDS.get()
+            ids.followers = result.content
+            ids.put()
 
-    # 管理しているidを全消去する
-    def reset(self):
-        db.delete(IDS.all())
-
-    # 新たにフォローする
-    def create(self):
-        # フォローすべきidの抽出
-        query = IDS.all()
-        query.filter('follower =', True)
-        query.filter('friend =',   False)
-        ids = query.fetch(100)
-        if len(ids) == 0:
-            return
-        # APIへの送信
-        id = random.choice(ids)
-        url = 'http://twitter.com/friendships/create/%s.json' % (id.key().name()[3:])
-        result = urlfetch.fetch(
-            url     = url,
-            method  = urlfetch.POST,
-            headers = self.auth_header,
-            )
-        logging.debug(result.status_code)
-        logging.debug(result.content)
-        if result.status_code == 200:
-            # 内部データの更新
-            id.friend = True
-            id.put()
-
-    # フォローを外す
-    def destroy(self):
-        # リムーブすべきidの抽出
-        query = IDS.all()
-        query.filter('friend =',   True)
-        query.filter('follower =', False)
-        ids = query.fetch(100)
-        if len(ids) == 0:
-            return
-        # APIへの送信
-        id = random.choice(ids)
-        url = 'http://twitter.com/friendships/destroy/%s.json' % (id.key().name()[3:])
-        result = urlfetch.fetch(
-            url     = url,
-            method  = urlfetch.POST,
-            headers = self.auth_header,
-            )
-        logging.debug(result.status_code)
-        logging.debug(result.content)
-        if result.status_code == 200:
-            # 内部データの更新
-            id.delete()
+    # friends, followersの情報から、follow or unfollowする
+    def friendship(self):
+        ids = IDS.get()
+        friends   = set(simplejson.loads(ids.friends))
+        followers = set(simplejson.loads(ids.followers))
+        should_follow   = list(followers - friends)
+        should_unfollow = list(friends - followers)
+        random.shuffle(should_follow)
+        random.shuffle(should_unfollow)
+        logging.debug("should follow: %d" % len(should_follow))
+        logging.debug("should unfollow: %d" % len(should_unfollow))
+        # 繰り返し挑戦するので失敗してもタイムアウトになっても気にしない
+        while len(should_follow) > 0 or len(should_unfollow) > 0:
+            if len(should_follow) > 0:
+                url = 'http://twitter.com/friendships/create/%s.json' % should_follow.pop()
+                logging.debug(url)
+                result = urlfetch.fetch(
+                    url     = url,
+                    method  = urlfetch.POST,
+                    headers = self.auth_header,
+                    )
+                if result.status_code != 200:
+                    logging.warn(result.content)
+            if len(should_unfollow) > 0:
+                url = 'http://twitter.com/friendships/destroy/%s.json' % should_unfollow.pop()
+                result = urlfetch.fetch(
+                    url     = url,
+                    method  = urlfetch.POST,
+                    headers = self.auth_header,
+                    )
+                if result.status_code != 200:
+                    logging.warn(result.content)
 
     # 何かをつぶやく
     def update(self, status = None, in_reply_to = None):

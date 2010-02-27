@@ -5,12 +5,9 @@ cron:
 - description: update followers
   url: /bot/twitter?action=followers
   schedule: every 5 minutes
-- description: create friend
-  url: /bot/twitter?action=create
-  schedule: every 5 minutes
-- description: destroy friend
-  url: /bot/twitter?action=destroy
-  schedule: every 5 minutes
+- description: update friendships
+  url: /bot/twitter?action=friendship
+  schedule: every 10 minutes
 - description: update myself
   url: /bot/twitter?action=update
   schedule: every 3 hours

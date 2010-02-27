@@ -16,9 +16,7 @@ class TwitterHandler(RequestHandler):
         self.action = {
             'friends'   : twit.friends,
             'followers' : twit.followers,
-            'reset'     : twit.reset,
-            'create'    : twit.create,
-            'destroy'   : twit.destroy,
+            'friendship': twit.friendship,
             'update'    : twit.update,
             'zenrize'   : twit.zenrize,
             }

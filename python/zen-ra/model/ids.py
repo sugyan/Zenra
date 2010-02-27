@@ -5,5 +5,13 @@ from google.appengine.ext import db
 
 
 class IDS(db.Model):
-    friend   = db.BooleanProperty()
-    follower = db.BooleanProperty()
+    friends   = db.TextProperty()
+    followers = db.TextProperty()
+
+    @classmethod
+    def get(cls):
+        return IDS.get_or_insert(
+            key_name  = 'unique',
+            friends   = '',
+            followers = '',
+            )
