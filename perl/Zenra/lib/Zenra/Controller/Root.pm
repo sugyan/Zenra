@@ -76,7 +76,7 @@ sub callback :Local {
         my $zenrized = decode_utf8 models('util')->zenrize(encode_utf8 $status->{text});
         next unless ($zenrized =~ /$zenra/);
 
-        my $text = "\@$screen_nameが以前にも全裸で言ったけど: $zenrized #zenra";
+        my $text = "\@${screen_name}が以前にも全裸で言ったけど: $zenrized #zenra";
         next if length($text) > 140;
 
         $ntl->update({
