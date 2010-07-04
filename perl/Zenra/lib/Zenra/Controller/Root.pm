@@ -29,18 +29,23 @@ sub zenrize :Local {
 sub callback :Local {
     my ($self, $c) = @_;
 
-    use YAML;
-    my $res = Dump $c->req->params;
+    my $token    = $c->req->param('oauth_token')    or $c->detach('/default');
+    my $verifier = $c->req->param('oauth_verifier') or $c->detach('/default');
 
     my $ntl = Net::Twitter::Lite->new(
         %{ models('conf')->{twitter}{oauth} }
     );
-    my @results = $ntl->request_access_token(
-        token_secret => '',
-        token        => $c->req->param('oauth_token'),
-        verifier     => $c->req->param('oauth_verifier'),
-    );
-    $c->res->body($res . "\n@results");
+    my ($access_token, $access_token_secret, $user_id, $screen_name) =
+        $ntl->request_access_token(
+            token_secret => '',
+            token        => $token,
+            verifier     => $verifier,
+        );
+    $ntl->access_token($access_token);
+    $ntl->access_token_secret($access_token_secret);
+
+    use YAML;
+    $c->res->body(Dump $ntl->home_timeline);
 }
 
 1;
