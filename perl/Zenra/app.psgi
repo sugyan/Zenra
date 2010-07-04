@@ -5,7 +5,7 @@ use FindBin::libs;
 use Zenra;
 
 my $app = Zenra->new;
-$app->setup;
+$app->setup_minimal;
 
 builder {
     enable 'Plack::Middleware::Static',
