@@ -1,6 +1,6 @@
 package Zenra::Controller::Root;
 use Ark 'Controller';
-use Encode 'decode_utf8';
+use Encode qw/encode_utf8 decode_utf8/;
 use Net::Twitter::Lite;
 use List::Util 'shuffle';
 use Try::Tiny;
@@ -68,17 +68,15 @@ sub callback :Local {
     $ntl->access_token($access_token);
     $ntl->access_token_secret($access_token_secret);
 
-    my $followers = $ntl->followers;
-    for my $user (shuffle @$followers) {
-        next unless $user->{following};
-        next if $user->{protected};
+    my $statuses = $ntl->user_timeline({count => 200});
+    for my $status (shuffle @$statuses) {
+        next if $status->{in_reply_to_status_id};
 
-        my $status   = $user->{status};
         my $zenra    = decode_utf8 models('util')->zenra;
-        my $zenrized = decode_utf8 models('util')->zenrize($status->{text});
+        my $zenrized = decode_utf8 models('util')->zenrize(encode_utf8 $status->{text});
         next unless ($zenrized =~ /$zenra/);
 
-        my $text = "\@$user->{screen_name}が全裸で言った: $zenrized #zenra";
+        my $text = "\@$screen_nameが以前にも全裸で言ったけど: $zenrized #zenra";
         next if length($text) > 140;
 
         $ntl->update({
