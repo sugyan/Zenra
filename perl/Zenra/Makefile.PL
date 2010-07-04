@@ -5,6 +5,7 @@ all_from 'lib/Zenra.pm';
 requires 'Ark';
 
 requires 'Net::Twitter::Lite';
+requires 'Text::MeCab';
 
 tests 't/*.t';
 
