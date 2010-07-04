@@ -1,13 +1,16 @@
 package Zenra::Models::Util;
 use Any::Moose;
 use Text::MeCab;
+use Zenra::Models;
 
 has mecab => (
     is   => 'ro',
     isa  => 'Text::MeCab',
     lazy => 1,
     default => sub {
-        Text::MeCab->new;
+        Text::MeCab->new(
+            %{ models('conf')->{mecab} }
+        );
     }
 );
 
