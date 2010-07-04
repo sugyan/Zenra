@@ -18,6 +18,8 @@ sub default :Path :Args {
 
 sub index :Path :Args(0) {
     my ($self, $c) = @_;
+
+    $c->res->content_type('text/html');
     $c->res->body(<<HTML
 <html>
   <head>
