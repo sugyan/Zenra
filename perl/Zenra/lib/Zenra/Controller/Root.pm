@@ -21,17 +21,26 @@ sub index :Path :Args(0) {
 sub zenrize :Local {
     my ($self, $c) = @_;
 
-    my $ntl = Net::Twitter::Lite->new(
-        %{models('conf')->{twitter}}
-    );
-    $c->redirect($ntl->get_authorization_url);
+    my $tw_conf = models('conf')->{twitter};
+    my $ntl = Net::Twitter::Lite->new(%{ $tw_conf->{oauth} });
+    $c->redirect($ntl->get_authorization_url(callback => $tw_conf->{callback_url}));
 }
 
 sub callback :Local {
     my ($self, $c) = @_;
 
     use YAML;
-    $c->res->body(Dump $c->req->params);
+    my $res = Dump $c->req->params;
+
+    my $ntl = Net::Twitter::Lite->new(
+        %{ models('conf')->{twitter}{oauth} }
+    );
+    my @results = $ntl->request_access_token(
+        token_secret => '',
+        token        => $c->req->param('oauth_token'),
+        verifier     => $c->req->param('oauth_verifier'),
+    );
+    $c->res->body($res . "\n@results");
 }
 
 1;

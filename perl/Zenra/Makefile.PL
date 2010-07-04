@@ -4,6 +4,8 @@ all_from 'lib/Zenra.pm';
 
 requires 'Ark';
 
+requires 'Net::Twitter::Lite';
+
 tests 't/*.t';
 
 build_requires 'Test::More';

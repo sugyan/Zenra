@@ -1,6 +1,9 @@
 return {
     twitter => {
-        consumer_key    => '****',
-        consumer_secret => '****',
+        oauth => {
+            consumer_key    => '****',
+            consumer_secret => '****',
+        },
+        callback_url    => 'http://example.com/',
     }
 };
