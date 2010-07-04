@@ -1,6 +1,7 @@
 use Plack::Builder;
 use Plack::Middleware::Static;
 
+use FindBin::libs;
 use Zenra;
 
 my $app = Zenra->new;
