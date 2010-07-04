@@ -1,6 +1,9 @@
 package Zenra::Controller::Root;
 use Ark 'Controller';
+use Encode 'decode_utf8';
 use Net::Twitter::Lite;
+use List::Util 'shuffle';
+use Try::Tiny;
 use Zenra::Models;
 
 has '+namespace' => default => '';
@@ -35,17 +38,45 @@ sub callback :Local {
     my $ntl = Net::Twitter::Lite->new(
         %{ models('conf')->{twitter}{oauth} }
     );
-    my ($access_token, $access_token_secret, $user_id, $screen_name) =
-        $ntl->request_access_token(
-            token_secret => '',
-            token        => $token,
-            verifier     => $verifier,
-        );
+    my ($access_token, $access_token_secret, $user_id, $screen_name);
+    my $error;
+    try {
+        ($access_token, $access_token_secret, $user_id, $screen_name) =
+            $ntl->request_access_token(
+                token_secret => '',
+                token        => $token,
+                verifier     => $verifier,
+            );
+    } catch {
+        $error = $_;
+    };
+    $c->detach('/index') if $error;
+
     $ntl->access_token($access_token);
     $ntl->access_token_secret($access_token_secret);
 
-    use YAML;
-    $c->res->body(Dump $ntl->home_timeline);
+    my $followers = $ntl->followers;
+    for my $user (shuffle @$followers) {
+        next unless $user->{following};
+        next if $user->{protected};
+
+        my $status   = $user->{status};
+        my $zenra    = decode_utf8 models('util')->zenra;
+        my $zenrized = decode_utf8 models('util')->zenrize($status->{text});
+        next unless ($zenrized =~ /$zenra/);
+
+        my $text = "\@$user->{screen_name}が全裸で言った: $zenrized #zenra";
+        next if length($text) > 140;
+
+        $ntl->update({
+            status => $text,
+            in_reply_to_status_id => $status->{id},
+        });
+
+        last;
+    }
+
+    $c->redirect("http://twitter.com/$screen_name");
 }
 
 1;
