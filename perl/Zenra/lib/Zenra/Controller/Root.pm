@@ -60,32 +60,31 @@ sub callback :Local {
                 token        => $token,
                 verifier     => $verifier,
             );
+        $ntl->access_token($access_token);
+        $ntl->access_token_secret($access_token_secret);
+
+        my $statuses = $ntl->user_timeline({count => 200});
+        for my $status (shuffle @$statuses) {
+            next if $status->{in_reply_to_status_id};
+
+            my $zenra    = decode_utf8 models('util')->zenra;
+            my $zenrized = decode_utf8 models('util')->zenrize(encode_utf8 $status->{text});
+            next unless ($zenrized =~ /$zenra/);
+
+            my $text = "\@${screen_name}が以前にも全裸で言ったけど: $zenrized #zenra";
+            next if length($text) > 140;
+
+            $ntl->update({
+                status => $text,
+                in_reply_to_status_id => $status->{id},
+            });
+
+            last;
+        }
     } catch {
         $error = $_;
     };
     $c->detach('/index') if $error;
-
-    $ntl->access_token($access_token);
-    $ntl->access_token_secret($access_token_secret);
-
-    my $statuses = $ntl->user_timeline({count => 200});
-    for my $status (shuffle @$statuses) {
-        next if $status->{in_reply_to_status_id};
-
-        my $zenra    = decode_utf8 models('util')->zenra;
-        my $zenrized = decode_utf8 models('util')->zenrize(encode_utf8 $status->{text});
-        next unless ($zenrized =~ /$zenra/);
-
-        my $text = "\@${screen_name}が以前にも全裸で言ったけど: $zenrized #zenra";
-        next if length($text) > 140;
-
-        $ntl->update({
-            status => $text,
-            in_reply_to_status_id => $status->{id},
-        });
-
-        last;
-    }
 
     $c->redirect("http://twitter.com/$screen_name");
 }
