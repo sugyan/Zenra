@@ -21,13 +21,13 @@ sub index :Path :Args(0) {
     $c->res->body(<<HTML
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>全裸的な何か</title>
   </head>
   <body>
     <a href="/zenrize">全裸的な何か</a>
   </body>
-</heml>
+</html>
 HTML
               );
 }
