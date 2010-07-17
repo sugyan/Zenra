@@ -16,22 +16,17 @@ sub default :Path :Args {
     $c->res->body('404 Not Found');
 }
 
-sub index :Path :Args(0) {
+# view renderer
+sub end :Private {
     my ($self, $c) = @_;
 
-    $c->res->content_type('text/html');
-    $c->res->body(<<HTML
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>全裸的な何か</title>
-  </head>
-  <body>
-    <a href="/zenrize">全裸的な何か</a>
-  </body>
-</html>
-HTML
-              );
+    unless ($c->res->body or $c->res->status =~ /^3\d\d/) {
+        $c->forward($c->view('MT'));
+    }
+}
+
+sub index :Path :Args(0) {
+    my ($self, $c) = @_;
 }
 
 sub zenrize :Local {
