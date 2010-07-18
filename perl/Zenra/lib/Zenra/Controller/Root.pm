@@ -84,4 +84,6 @@ sub callback :Local {
     $c->redirect("http://twitter.com/$screen_name");
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;

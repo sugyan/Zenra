@@ -6,6 +6,7 @@ requires 'Ark';
 
 requires 'Net::Twitter::Lite';
 requires 'Text::MeCab';
+requires 'Try::Tiny';
 
 tests 't/*.t';
 
