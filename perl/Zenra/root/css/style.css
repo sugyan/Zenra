@@ -44,6 +44,22 @@ span.body {
     min-height:48px;
 }
 
-div.screen_name {
+span.screen_name {
     color: #0000FF;
+}
+
+span.created_at,
+span.created_at a:link,
+span.created_at a:visited {
+    margin-left: 3px;
+    color: #808080;
+    font-size: small;
+}
+
+span.zenra {
+    font-weight: bold;
+}
+
+div#status span.content {
+    font-size: large;
 }

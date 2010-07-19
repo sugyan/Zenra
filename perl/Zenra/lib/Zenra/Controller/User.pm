@@ -23,6 +23,7 @@ sub index :Path :Args(1) {
     };
     $c->forward('/process_statuses', $timeline);
     $c->stash->{screen_name} = $args;
+    $c->stash->{user_info} = $timeline->[0]{user};
     $c->stash->{remaining} = $tw->rate_remaining;
 }
 

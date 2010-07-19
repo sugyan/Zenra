@@ -43,7 +43,8 @@ register parser => sub {
     $self->ensure_class_loaded('Date::Parse');
     return sub {
         return DateTime->from_epoch(
-            epoch => Date::Parse::str2time($_[0]),
+            epoch     => Date::Parse::str2time($_[0]),
+            time_zone => 'Asia/Tokyo',
         );
     };
 };

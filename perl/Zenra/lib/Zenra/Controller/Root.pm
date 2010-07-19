@@ -45,9 +45,10 @@ sub process_statuses :Private {
     my $zenra = $c->model('util')->zenra;
     for my $status (@$statuses) {
         if (my $data = $c->model('Schema::Status')->find($status->{id})) {
-            push @{ $c->stash->{statuses} }, +{ $data->get_columns };
+            push @{ $c->stash->{statuses} }, +{ $data->get_inflated_columns };
             next;
         }
+        $status->{created_at} = $c->model('parser')->($status->{created_at});
         my $zenrized_text = $c->model('util')->zenrize(encode_utf8 $status->{text});
         if ($zenrized_text =~ $zenra) {
             my $data = $c->model('Schema::Status')->create({
@@ -55,10 +56,10 @@ sub process_statuses :Private {
                 text          => decode_utf8($zenrized_text),
                 screen_name   => $status->{user}{screen_name},
                 profile_image => $status->{user}{profile_image_url},
-                created_at    => $c->model('parser')->($status->{created_at}),
                 protected     => $status->{user}{protected},
+                created_at    => $status->{created_at},
             });
-            push @{ $c->stash->{statuses} }, +{ $data->get_columns };
+            push @{ $c->stash->{statuses} }, +{ $data->get_inflated_columns };
             next;
         }
         $status->{no_zenra} = 1;

@@ -8,10 +8,19 @@
     </a>
   </span>
   <span class="body">
-    <div class="screen_name">
-      <a href="/user/<?= $screen_name ?>">@<?= $screen_name ?></a>
+    <div>
+      <span class="screen_name">
+        <a href="/user/<?= $screen_name ?>">@<?= $screen_name ?></a>
+      </span>
+      <span class="created_at">
+? if ($status->{no_zenra}) {
+        <?= $status->{created_at}->strftime('%Y/%m/%d %H:%M:%S') ?>
+? } else {
+        <a href="/status/<?= $status->{id} ?>"><?= $status->{created_at}->strftime('%Y/%m/%d %H:%M:%S') ?></a>
+? }
+      </span>
     </div>
-    <?= $status->{text} ?>
+    <? $status->{text} =~ s!全裸で!<span class="zenra">全裸で</span>!g ?><?= raw_string($status->{text}) ?>
   </span>
 </li>
 ? }
