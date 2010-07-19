@@ -7,9 +7,9 @@
 ?     }
 <ul>
   <li>Twitter OAuthを使います。
-  <li><a href="/login">ログイン</a>するとあなたのfriends_timelineをちょっと改変します。</li>
+  <li><a href="/login">ログイン</a>するとあなたのタイムラインをちょっと全裸にします。</li>
   <li>勝手に呟いたりは(今のところ)しません。</li>
-  <li>まだまだ試行錯誤中</li>
+  <li>いろいろ試行錯誤中</li>
 </ul>
 
 <dl>

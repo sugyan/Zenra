@@ -13,7 +13,8 @@
       </div>
       <div id="user">
 ? if ($c->user) {
-<?= $c->user->obj->screen_name ?>
+?     my $screen_name = $c->user->obj->screen_name
+<a href="/user/<?= $screen_name ?>">@<?= $screen_name ?></a>としてログイン中
 ?     if (my $remaining = $c->stash->{remaining}) {
 (API残り<?= $remaining ?>回)
 ?     }

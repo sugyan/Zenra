@@ -14,20 +14,36 @@ div#user {
     float: right;
 }
 
-div.status {
-    clear: both;
-    border-top: silver solid 1px;
+ul.statuses {
+    padding: 0px;
+    list-style: none;
+    position: relative;
 }
 
-div.text {
-    margin: 5px;
+li.status {
+    padding: 5px;
+    border-top: silver solid 1px;
+    background: #FFDDDD;
+    position: relative;
+}
+
+li.no_zenra {
+    background: #EEEEEE;
+}
+
+span.profile_image {
+    display: block;
+    height: 48px;
+    width: 48px;
+    position:absolute;
+}
+
+span.body {
+    display: block;
+    margin-left: 56px;
+    min-height:48px;
 }
 
 div.screen_name {
     color: #0000FF;
-}
-
-div.profile_image {
-    float: left;
-    margin: 5px;
 }

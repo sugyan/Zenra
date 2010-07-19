@@ -31,12 +31,19 @@ sub home :Local :Args(0) {
 
     $c->redirect_and_detach('/') unless $c->user;
 
-    my $tw = $c->model('twitter', "hoge");
+    my $tw = $c->model('twitter');
     $tw->access_token($c->user->obj->access_token);
     $tw->access_token_secret($c->user->obj->access_token_secret);
 
+    $c->forward('/process_statuses', $tw->home_timeline);
+    $c->stash->{remaining} = $tw->rate_remaining;
+}
+
+sub process_statuses :Private {
+    my ($self, $c, $statuses) = @_;
+
     my $zenra = $c->model('util')->zenra;
-    for my $status (@{ $tw->home_timeline }) {
+    for my $status (@$statuses) {
         if (my $data = $c->model('Schema::Status')->find($status->{id})) {
             push @{ $c->stash->{statuses} }, +{ $data->get_columns };
             next;
@@ -49,15 +56,14 @@ sub home :Local :Args(0) {
                 screen_name   => $status->{user}{screen_name},
                 profile_image => $status->{user}{profile_image_url},
                 created_at    => $c->model('parser')->($status->{created_at}),
-                protected     => $status->{protected},
+                protected     => $status->{user}{protected},
             });
             push @{ $c->stash->{statuses} }, +{ $data->get_columns };
             next;
         }
+        $status->{no_zenra} = 1;
         push @{ $c->stash->{statuses} }, $status;
     }
-
-    $c->stash->{remaining} = $tw->rate_remaining;
 }
 
 __PACKAGE__->meta->make_immutable;
