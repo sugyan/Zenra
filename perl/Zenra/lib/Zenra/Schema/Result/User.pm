@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use base 'Zenra::Schema::ResultBase';
 
-__PACKAGE__->table("user");
+__PACKAGE__->table('user');
 __PACKAGE__->add_columns(
     id => {
         data_type   => 'INTEGER',

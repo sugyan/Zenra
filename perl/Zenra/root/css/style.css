@@ -1,0 +1,33 @@
+body {
+	font-family: 'Lucida Grande';
+}
+
+div#header {
+    height: 30px;
+}
+
+div#top {
+    float: left;
+}
+
+div#user {  
+    float: right;
+}
+
+div.status {
+    clear: both;
+    border-top: silver solid 1px;
+}
+
+div.text {
+    margin: 5px;
+}
+
+div.screen_name {
+    color: #0000FF;
+}
+
+div.profile_image {
+    float: left;
+    margin: 5px;
+}

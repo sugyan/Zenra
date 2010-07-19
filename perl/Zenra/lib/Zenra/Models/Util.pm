@@ -1,18 +1,6 @@
 package Zenra::Models::Util;
 use Any::Moose;
-use Text::MeCab;
 use Zenra::Models;
-
-has mecab => (
-    is   => 'ro',
-    isa  => 'Text::MeCab',
-    lazy => 1,
-    default => sub {
-        Text::MeCab->new(
-            %{ models('conf')->{mecab} }
-        );
-    }
-);
 
 has zenra => (
     is  => 'ro',
@@ -36,7 +24,7 @@ sub _zenrize {
     my ($self, $sentence) = @_;
 
     my $result = '';
-    my $n = $self->mecab->parse($sentence);
+    my $n = models('mecab')->parse($sentence);
 
     # 末尾まで進める
     $n = $n->next while ($n->next);

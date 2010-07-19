@@ -1,10 +1,6 @@
 package Zenra::Controller::Root;
 use Ark 'Controller';
 use Encode qw/encode_utf8 decode_utf8/;
-use Net::Twitter::Lite;
-use List::Util 'shuffle';
-use Try::Tiny;
-use Zenra::Models;
 
 has '+namespace' => default => '';
 
@@ -30,60 +26,39 @@ sub index :Path :Args(0) {
     my ($self, $c) = @_;
 }
 
-# sub zenrize :Local {
-#     my ($self, $c) = @_;
+sub home :Local :Args(0) {
+    my ($self, $c) = @_;
 
-#     my $tw_conf = models('conf')->{twitter};
-#     my $ntl = Net::Twitter::Lite->new(%{ $tw_conf->{oauth} });
-#     $c->redirect($ntl->get_authorization_url(callback => $tw_conf->{callback_url}));
-# }
+    $c->redirect_and_detach('/') unless $c->user;
 
-# sub callback :Local {
-#     my ($self, $c) = @_;
+    my $tw = $c->model('twitter', "hoge");
+    $tw->access_token($c->user->obj->access_token);
+    $tw->access_token_secret($c->user->obj->access_token_secret);
 
-#     my $token    = $c->req->param('oauth_token')    or $c->detach('/default');
-#     my $verifier = $c->req->param('oauth_verifier') or $c->detach('/default');
+    my $zenra = $c->model('util')->zenra;
+    for my $status (@{ $tw->home_timeline }) {
+        if (my $data = $c->model('Schema::Status')->find($status->{id})) {
+            push @{ $c->stash->{statuses} }, +{ $data->get_columns };
+            next;
+        }
+        my $zenrized_text = $c->model('util')->zenrize(encode_utf8 $status->{text});
+        if ($zenrized_text =~ $zenra) {
+            my $data = $c->model('Schema::Status')->create({
+                id            => $status->{id},
+                text          => decode_utf8($zenrized_text),
+                screen_name   => $status->{user}{screen_name},
+                profile_image => $status->{user}{profile_image_url},
+                created_at    => $c->model('parser')->($status->{created_at}),
+                protected     => $status->{protected},
+            });
+            push @{ $c->stash->{statuses} }, +{ $data->get_columns };
+            next;
+        }
+        push @{ $c->stash->{statuses} }, $status;
+    }
 
-#     my $ntl = Net::Twitter::Lite->new(
-#         %{ models('conf')->{twitter}{oauth} }
-#     );
-#     my ($access_token, $access_token_secret, $user_id, $screen_name);
-#     my $error;
-#     try {
-#         ($access_token, $access_token_secret, $user_id, $screen_name) =
-#             $ntl->request_access_token(
-#                 token_secret => '',
-#                 token        => $token,
-#                 verifier     => $verifier,
-#             );
-#         $ntl->access_token($access_token);
-#         $ntl->access_token_secret($access_token_secret);
-
-#         my $statuses = $ntl->user_timeline({count => 200});
-#         for my $status (shuffle @$statuses) {
-#             next if $status->{in_reply_to_status_id};
-
-#             my $zenra    = decode_utf8 models('util')->zenra;
-#             my $zenrized = decode_utf8 models('util')->zenrize(encode_utf8 $status->{text});
-#             next unless ($zenrized =~ /$zenra/);
-
-#             my $text = "\@${screen_name}が以前にも全裸で言ったけど: $zenrized #zenra";
-#             next if length($text) > 140;
-
-#             $ntl->update({
-#                 status => $text,
-#                 in_reply_to_status_id => $status->{id},
-#             });
-
-#             last;
-#         }
-#     } catch {
-#         $error = $_;
-#     };
-#     $c->detach('/index') if $error;
-
-#     $c->redirect("http://twitter.com/$screen_name");
-# }
+    $c->stash->{remaining} = $tw->rate_remaining;
+}
 
 __PACKAGE__->meta->make_immutable;
 

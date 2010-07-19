@@ -5,6 +5,7 @@ all_from 'lib/Zenra.pm';
 requires 'Ark';
 
 requires 'Cache::FastMmap';
+requires 'Date::Parse';
 requires 'Net::Twitter';
 requires 'Text::MeCab';
 requires 'Try::Tiny';

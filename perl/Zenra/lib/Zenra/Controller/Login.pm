@@ -7,7 +7,7 @@ sub index :Path :Args(0) {
     my $auth = $c->auth->authenticate_twitter(
         callback => $c->uri_for('/login'),
     );
-    $c->redirect_and_detach('/') if $auth;
+    $c->redirect_and_detach('/home') if $auth;
 }
 
 __PACKAGE__->meta->make_immutable;

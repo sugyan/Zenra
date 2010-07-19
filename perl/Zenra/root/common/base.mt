@@ -4,8 +4,25 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><? block title => sub { '全裸的な何か' } ?></title>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/style.css" /> 
   </head>
   <body>
+    <div id="header">
+      <div id="top">
+        <a href="/">TOP</a>
+      </div>
+      <div id="user">
+? if ($c->user) {
+<?= $c->user->obj->screen_name ?>
+?     if (my $remaining = $c->stash->{remaining}) {
+(API残り<?= $remaining ?>回)
+?     }
+<a href="/logout">ログアウト</a><br />
+? } else {
+<a href="/login">OAuthでログインする</a><br />
+? }
+      </div>
+    </div>
 ? block content => '';
   </body>
 </html>
