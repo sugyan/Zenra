@@ -6,6 +6,7 @@ requires 'Ark';
 
 requires 'Cache::FastMmap';
 requires 'Date::Parse';
+requires 'DateTime::Format::MySQL';
 requires 'Net::Twitter';
 requires 'Text::MeCab';
 requires 'Try::Tiny';
