@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/(app.cgi|css/|js/|favicon\.ico)
+RewriteRule ^(.*)$ app.cgi/$1 [PT,L]
