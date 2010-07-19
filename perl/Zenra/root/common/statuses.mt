@@ -13,7 +13,7 @@
         <a href="/user/<?= $screen_name ?>">@<?= $screen_name ?></a>
       </span>
       <span class="created_at">
-? if ($status->{no_zenra}) {
+? if ($status->{no_zenra} || $status->{protected}) {
         <?= $status->{created_at}->strftime('%Y/%m/%d %H:%M:%S') ?>
 ? } else {
         <a href="/status/<?= $status->{id} ?>"><?= $status->{created_at}->strftime('%Y/%m/%d %H:%M:%S') ?></a>
