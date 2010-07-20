@@ -18,6 +18,11 @@ __PACKAGE__->add_columns(
         size        => 20,
         is_nullable => 0,
     },
+    name => {
+        data_type   => 'VARCHAR',
+        size        => 64,
+        is_nullable => 0,
+    },
     profile_image => {
         data_type   => 'VARCHAR',
         size        => 255,

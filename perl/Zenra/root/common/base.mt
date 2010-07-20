@@ -9,7 +9,10 @@
   <body>
     <div id="header">
       <div id="top">
-        <a href="/">TOP</a>
+        <a href="/"><img src="/img/logo.png" /></a>
+? if ($c->user) {
+        <a href="/home">home</a>
+? }
       </div>
       <div id="user">
 ? if ($c->user) {

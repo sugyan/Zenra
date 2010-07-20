@@ -1,10 +1,6 @@
 ? extends 'common/base';
 
 ? block content => sub {
-<h1>全裸的な何か</h1>
-?     if ($c->user) {
-<a href="/home">home</a>
-?     }
 <ul>
   <li>Twitter OAuthを使います。
   <li><a href="/login">ログイン</a>するとあなたのタイムラインをちょっと全裸にします。</li>

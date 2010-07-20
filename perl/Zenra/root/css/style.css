@@ -2,8 +2,12 @@ body {
     font-family: 'Lucida Grande';
 }
 
+img {
+    border: none;
+}
+
 div#header {
-    height: 30px;
+    height: 50px;
 }
 
 div#top {
@@ -60,6 +64,44 @@ span.zenra {
     font-weight: bold;
 }
 
-div#status span.content {
-    font-size: large;
+div#content {
+    margin: auto;
+    width: 650px;
+}
+
+div.status span.text {
+    font-family:georgia;
+    font-size: 2em;
+    display: block;
+}
+
+div.status span.meta {
+    margin: 5px 0;
+    color: #808080;
+    display: block;
+}
+
+div.status div.user_info {
+    padding: 10px;
+    border-top: silver solid 1px;
+}
+
+div.user_info div.icon {
+    float: left;
+    margin-right: 20px;
+}
+
+div.icon img {
+    width: 48px;
+    height: 48px;
+}
+
+#content div.screen_name a {
+    font-size: 1.5em;
+    color: #0000FF;
+    text-decoration:none;
+}
+
+#content div.name {
+    color: gray;
 }

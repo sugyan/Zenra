@@ -55,6 +55,7 @@ sub process_statuses :Private {
                 id            => $status->{id},
                 text          => decode_utf8($zenrized_text),
                 screen_name   => $status->{user}{screen_name},
+                name          => $status->{user}{name},
                 profile_image => $status->{user}{profile_image_url},
                 protected     => $status->{user}{protected},
                 created_at    => $status->{created_at},
