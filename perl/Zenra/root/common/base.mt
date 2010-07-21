@@ -5,6 +5,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><? block title => sub { '全裸的な何か' } ?></title>
     <link rel="stylesheet" type="text/css" media="screen" href="/css/style.css" /> 
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">google.load("jquery", "1.4.2");</script>
+    <script type="text/javascript" src="/js/zenra.js"></script>
   </head>
   <body>
     <div id="header">

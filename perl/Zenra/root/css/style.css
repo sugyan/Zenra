@@ -64,13 +64,19 @@ span.zenra {
     font-weight: bold;
 }
 
+span.spread {
+    float: right;
+    margin: 5px;
+    font-size: small;
+}
+
 div#content {
     margin: auto;
     width: 650px;
 }
 
 div.status span.text {
-    font-family:georgia;
+    font-family: Arial, 'ＭＳ Ｐゴシック', sans-serif;
     font-size: 2em;
     display: block;
 }

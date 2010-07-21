@@ -21,6 +21,14 @@
       </span>
     </div>
     <? $status->{text} =~ s!全裸で!<span class="zenra">全裸で</span>!g ?><?= raw_string($status->{text}) ?>
+? unless ($status->{no_zenra} || $status->{protected}) {
+    <span class="spread">
+      <form class="spread_button" action="/spread" method="post">
+        <input type="hidden" name="id" value="<?= $status->{id} ?>" />
+        <button type="submit">拡散する</button>
+      </form>
+    </span>
+? }
   </span>
 </li>
 ? }

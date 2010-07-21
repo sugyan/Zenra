@@ -40,7 +40,8 @@ __PACKAGE__->add_columns(
         default_value => 0,
     },
 );
-
 __PACKAGE__->set_primary_key('id');
+__PACKAGE__->has_many(spreads => 'Zenra::Schema::Result::Spread', 'status');
+__PACKAGE__->many_to_many(users => 'spreads', 'user');
 
 1;
