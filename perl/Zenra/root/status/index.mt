@@ -5,6 +5,12 @@
 <div id="content">
   <div class="status">
     <span class="text"><?= $status->text ?></span>
+    <div class="spread">
+      <form class="spread_button<?= $status->{spread} ? '_cancel' : '' ?>" action="/spread" method="post">
+        <input type="hidden" name="id" value="<?= $status->id ?>" />
+        <input type="submit" value="<?= $status->{spread} ? '取り消す' : '拡散する' ?>" />
+      </form>
+    </div>
     <span class="meta"><?= $status->created_at->strftime('%Y/%m/%d %H:%M:%S') ?></span>
     <div class="user_info">
       <div class="icon"><img src="<?= $status->profile_image ?>" /></div>

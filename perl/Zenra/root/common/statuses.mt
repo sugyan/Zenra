@@ -1,13 +1,13 @@
 <ul class="statuses">
 ? for my $status (@{ $c->stash->{statuses} }) {
-?     my $screen_name = $status->{user}{screen_name} || $status->{screen_name};
+?     my $screen_name = $status->{screen_name};
 <li class="status<?= $status->{no_zenra} ? ' no_zenra' : '' ?>">
   <span class="profile_image">
     <a href="/user/<?= $screen_name ?>">
-      <img src="<?= $status->{user}{profile_image_url} || $status->{profile_image} ?>" height="48" width="48" />
+      <img src="<?= $status->{profile_image} ?>" height="48" width="48" />
     </a>
   </span>
-  <span class="body">
+  <div class="body">
     <div>
       <span class="screen_name">
         <a href="/user/<?= $screen_name ?>">@<?= $screen_name ?></a>
@@ -22,14 +22,14 @@
     </div>
     <? $status->{text} =~ s!全裸で!<span class="zenra">全裸で</span>!g ?><?= raw_string($status->{text}) ?>
 ? unless ($status->{no_zenra} || $status->{protected}) {
-    <span class="spread">
-      <form class="spread_button" action="/spread" method="post">
+    <div class="spread">
+      <form class="spread_button<?= $status->{spread} ? '_cancel' : '' ?>" action="/spread" method="post">
         <input type="hidden" name="id" value="<?= $status->{id} ?>" />
-        <button type="submit">拡散する</button>
+        <input type="submit" value="<?= $status->{spread} ? '取り消す' : '拡散する' ?>" />
       </form>
-    </span>
+    </div>
 ? }
-  </span>
+  </div>
 </li>
 ? }
 </ul>

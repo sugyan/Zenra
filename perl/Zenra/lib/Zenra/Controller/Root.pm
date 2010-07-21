@@ -44,27 +44,27 @@ sub process_statuses :Private {
 
     my $zenra = $c->model('util')->zenra;
     for my $status (@$statuses) {
-        if (my $data = $c->model('Schema::Status')->find($status->{id})) {
-            push @{ $c->stash->{statuses} }, +{ $data->get_inflated_columns };
-            next;
-        }
-        $status->{created_at} = $c->model('parser')->($status->{created_at});
         my $zenrized_text = $c->model('util')->zenrize(encode_utf8 $status->{text});
+        my $params = {
+            id            => $status->{id},
+            text          => decode_utf8($zenrized_text),
+            screen_name   => $status->{user}{screen_name},
+            name          => $status->{user}{name},
+            profile_image => $status->{user}{profile_image_url},
+            protected     => $status->{user}{protected},
+            created_at    => $c->model('parser')->($status->{created_at}),
+        };
+        warn $params->{created_at};
         if ($zenrized_text =~ $zenra) {
-            my $data = $c->model('Schema::Status')->create({
-                id            => $status->{id},
-                text          => decode_utf8($zenrized_text),
-                screen_name   => $status->{user}{screen_name},
-                name          => $status->{user}{name},
-                profile_image => $status->{user}{profile_image_url},
-                protected     => $status->{user}{protected},
-                created_at    => $status->{created_at},
-            });
-            push @{ $c->stash->{statuses} }, +{ $data->get_inflated_columns };
-            next;
+            my $status = $c->model('Schema::Status')->update_or_create({ %$params });
+            $params->{spread} = ($c->user && $status->users->find($c->user->obj->id)) ? 1 : 0;
         }
-        $status->{no_zenra} = 1;
-        push @{ $c->stash->{statuses} }, $status;
+        else {
+            $params->{no_zenra} = 1;
+        }
+        warn $params->{created_at};
+        warn $params->{spread};
+        push @{ $c->stash->{statuses} }, $params;
     }
 }
 

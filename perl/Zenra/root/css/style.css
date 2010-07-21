@@ -42,7 +42,7 @@ span.profile_image {
     position:absolute;
 }
 
-span.body {
+div.body {
     display: block;
     margin-left: 56px;
     min-height:48px;
@@ -64,9 +64,8 @@ span.zenra {
     font-weight: bold;
 }
 
-span.spread {
-    float: right;
-    margin: 5px;
+div.spread {
+    text-align: right;
     font-size: small;
 }
 
