@@ -29,7 +29,7 @@ sub index :Path :Args(0) {
 sub home :Local :Args(0) {
     my ($self, $c) = @_;
 
-    $c->redirect_and_detach('/') unless $c->user;
+    $c->redirect_and_detach('/login') unless $c->user;
 
     my $tw = $c->model('twitter');
     $tw->access_token($c->user->obj->access_token);

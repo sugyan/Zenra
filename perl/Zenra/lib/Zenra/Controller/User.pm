@@ -5,7 +5,7 @@ use Try::Tiny;
 sub auto :Private {
     my ($self, $c) = @_;
 
-    $c->redirect_and_detach('/') unless $c->user;
+    $c->redirect_and_detach('/login') unless $c->user;
 }
 
 sub index :Path :Args(1) {
