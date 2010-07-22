@@ -7,9 +7,9 @@
     <span class="text"><?= $status->text ?></span>
 ? if ($c->user) {
     <div class="spread">
-      <form class="spread_button<?= $status->{spread} ? '_cancel' : '' ?>" action="/spread" method="post">
+      <form class="spread_button<?= $c->stash->{spread} ? '_cancel' : '' ?>" action="/spread" method="post">
         <input type="hidden" name="id" value="<?= $status->id ?>" />
-        <input type="submit" value="<?= $status->{spread} ? '取り消す' : '拡散する' ?>" />
+        <input type="submit" value="<?= $c->stash->{spread} ? '取り消す' : '拡散する' ?>" />
       </form>
     </div>
 ? }
