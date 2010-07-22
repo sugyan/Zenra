@@ -21,7 +21,7 @@
       </span>
     </div>
     <? $status->{text} =~ s!全裸で!<span class="zenra">全裸で</span>!g ?><?= raw_string($status->{text}) ?>
-? if ($c->user && ! ($status->{no_zenra} || $status->{protected})) {
+? unless ($status->{no_zenra} || $status->{protected}) {
     <div class="spread">
       <form class="spread_button<?= $status->{spread} ? '_cancel' : '' ?>" action="/spread" method="post">
         <input type="hidden" name="id" value="<?= $status->{id} ?>" />
