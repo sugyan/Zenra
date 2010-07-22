@@ -54,7 +54,6 @@ sub process_statuses :Private {
             protected     => $status->{user}{protected},
             created_at    => $c->model('parser')->($status->{created_at}),
         };
-        warn $params->{created_at};
         if ($zenrized_text =~ $zenra) {
             my $status = $c->model('Schema::Status')->update_or_create({ %$params });
             $params->{spread} = ($c->user && $status->users->find($c->user->obj->id)) ? 1 : 0;
@@ -62,8 +61,6 @@ sub process_statuses :Private {
         else {
             $params->{no_zenra} = 1;
         }
-        warn $params->{created_at};
-        warn $params->{spread};
         push @{ $c->stash->{statuses} }, $params;
     }
 }

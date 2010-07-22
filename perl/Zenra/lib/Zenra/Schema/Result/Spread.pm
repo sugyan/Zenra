@@ -27,9 +27,10 @@ __PACKAGE__->add_columns(
         timezone    => __PACKAGE__->TZ,
     },
 );
+__PACKAGE__->set_primary_key('id');
+__PACKAGE__->add_unique_constraint('user_status', ['user', 'status']);
 __PACKAGE__->belongs_to(user   => 'Zenra::Schema::Result::User'  );
 __PACKAGE__->belongs_to(status => 'Zenra::Schema::Result::Status');
-__PACKAGE__->add_unique_constraint('user_status', ['user', 'status']);
 
 sub insert {
     my ($self) = @_;

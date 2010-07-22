@@ -11,6 +11,9 @@ has zenra => (
 sub zenrize {
     my ($self, $text) = @_;
 
+    # 既に含まれていればそれ以上何もしない
+    return $text if $text =~ $self->zenra;
+
     my $result = '';
     for my $sentence (split/(\s+)/, $text) {
         $result .= $sentence =~ /\s+/ ? $sentence : $self->_zenrize($sentence);

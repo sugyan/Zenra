@@ -3,6 +3,7 @@ use Zenra::Models;
 my $home = Zenra::Models->get('home');
 
 return {
+    domain => 'sugyan.sakura.ne.jp',
     cache => {
         class => 'Cache::FastMmap',
         deref => 1,
