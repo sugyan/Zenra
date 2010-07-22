@@ -1,5 +1,6 @@
 package Zenra::Controller::Spread;
 use Ark 'Controller';
+use Try::Tiny;
 
 sub auto :Private {
     my ($self, $c) = @_;
@@ -24,8 +25,14 @@ sub index :Path :Args(0) {
     }, {
         key => 'user_status',
     });
+
+    my $tweeted;
     if ($spread) {
-        $tw->destroy_status($spread->id);
+        try {
+            $tw->destroy_status($spread->id);
+        } catch {
+            $c->log(error => $_);
+        };
         $spread->delete;
     } else {
         my $text = sprintf '@%sが #zenra で言った: %s', (
@@ -37,15 +44,27 @@ sub index :Path :Args(0) {
             $text = substr($text, 0, length($text) - $over - 3) . '...';
         }
         $text .= " $url";
-        my $result = $tw->update({
-            status => $text,
-            in_reply_to_status_id => $status->id,
-        });
-        $status->add_to_users($c->user->obj, {
-            id => $result->{id},
-        });
+        try {
+            my $result = $tw->update({
+                status => $text,
+                in_reply_to_status_id => $status->id,
+            });
+            $status->add_to_users($c->user->obj, {
+                id => $result->{id},
+            });
+            $tweeted = $result;
+        } catch {
+            $c->log(error => $_);
+        };
     }
-    $c->redirect_and_detach('/home');
+
+    # とりあえず拡散成功したときだけTwitterに飛ばす
+    if ($tweeted) {
+        $c->redirect_and_detach("http://twitter.com/$tweeted->{user}{screen_name}/status/$tweeted->{id}");
+    }
+    else {
+        $c->redirect_and_detach('/home');
+    }
 }
 
 __PACKAGE__->meta->make_immutable;
