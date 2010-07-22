@@ -39,7 +39,8 @@ sub index :Path :Args(0) {
             $status->screen_name,
             $status->text,
         );
-        my $url = 'http://' . $c->model('conf')->{domain} . '/status/' . $status->id;
+        my $url = $status->short_url
+            || 'http://' . $c->model('conf')->{domain} . '/status/' . $status->id;
         if ((my $over = length($text) + length($url) + 1 - 140) > 0) {
             $text = substr($text, 0, length($text) - $over - 3) . '...';
         }

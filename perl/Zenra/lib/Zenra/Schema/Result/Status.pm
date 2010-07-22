@@ -39,6 +39,11 @@ __PACKAGE__->add_columns(
         is_nullable   => 1,
         default_value => 0,
     },
+    short_url => {
+        data_type   => 'VARCHAR',
+        size        => 32,
+        is_nullable => 1,
+    },
 );
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->has_many(spreads => 'Zenra::Schema::Result::Spread', 'status');

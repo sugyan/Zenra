@@ -21,6 +21,12 @@ __PACKAGE__->add_columns(
         data_type   => 'BIGINT',
         is_nullable => 0,
     },
+    shorten => {
+        data_type     => 'TINYINT',
+        size          => 1,
+        is_nullable   => 1,
+        default_value => 0,
+    },
     created_at => {
         data_type   => 'DATETIME',
         is_nullable => 0,
