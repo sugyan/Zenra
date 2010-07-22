@@ -22,5 +22,14 @@
       <div class="name"><?= $status->name ?></div>
     </div>
   </div>
+  <div class="spreaders">
+    <ul>
+? while (my $spread =  $c->stash->{spreads}->next) {
+      <li>
+        <a href="/user/<?= $spread->user->screen_name ?>">@<?= $spread->user->screen_name ?></a> が <?= $spread->created_at->strftime('%Y/%m/%d %H:%M:%S') ?> に拡散しました
+      </li>
+? }
+    </ul>
+  </div>
 </div>
 ? }

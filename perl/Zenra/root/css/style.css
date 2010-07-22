@@ -101,10 +101,20 @@ div.icon img {
     height: 48px;
 }
 
+div.spreaders ul {
+    font-size: small;
+    color: gray;
+}
+
+div.spreaders ul a {
+    color: #000080;
+    text-decoration: none;
+}
+
 #content div.screen_name a {
     font-size: 1.5em;
     color: #0000FF;
-    text-decoration:none;
+    text-decoration: none;
 }
 
 #content div.name {
