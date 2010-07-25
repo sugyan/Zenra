@@ -18,7 +18,7 @@ div#user {
     float: right;
 }
 
-ul.statuses {
+ul#statuses {
     padding: 0px;
     list-style: none;
     position: relative;

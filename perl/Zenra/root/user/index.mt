@@ -8,5 +8,10 @@
 <div class="location"><?= $user_info->{location} ?></div>
 <div class="url"><?= $user_info->{url} ?></div>
 <pre class="description"><?= $user_info->{description} ?></pre>
-<?= include('common/statuses') ?>
+<ul id="statuses" />
+<script type="text/javascript">
+$(function () {
+    user_timeline("<?= $c->stash->{screen_name} ?>");
+});
+</script>
 ? }
