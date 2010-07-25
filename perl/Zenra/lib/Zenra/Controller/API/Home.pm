@@ -8,7 +8,7 @@ sub index :Path :Args(0) {
     $tw->access_token($c->user->obj->access_token);
     $tw->access_token_secret($c->user->obj->access_token_secret);
 
-    $c->forward('/api/process_statuses', $tw->home_timeline);
+    $c->stash->{json}{statuses}  = $c->forward('/api/process_statuses', $tw->home_timeline);
     $c->stash->{json}{remaining} = $tw->rate_remaining;
 }
 

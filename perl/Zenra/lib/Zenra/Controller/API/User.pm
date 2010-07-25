@@ -18,7 +18,10 @@ sub index :Path :Args(1) {
         $c->stash->{json}{error} = $error->message;
     };
 
-    $c->forward('/api/process_statuses', $statuses);
+    if ($statuses) {
+        $c->stash->{json}{statuses}  = $c->forward('/api/process_statuses', $statuses);
+        $c->stash->{json}{user_info} = $statuses->[0]{user};
+    }
     $c->stash->{json}{remaining} = $tw->rate_remaining;
 }
 

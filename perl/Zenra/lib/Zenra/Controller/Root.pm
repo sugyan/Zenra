@@ -25,12 +25,6 @@ sub index :Path :Args(0) {
     my ($self, $c) = @_;
 }
 
-sub home :Local :Args(0) {
-    my ($self, $c) = @_;
-
-    $c->redirect_and_detach('/login') unless $c->user;
-}
-
 __PACKAGE__->meta->make_immutable;
 
 1;

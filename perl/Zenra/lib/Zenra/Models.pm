@@ -3,6 +3,13 @@ use strict;
 use warnings;
 use Ark::Models '-base';
 
+register cache => sub {
+    my ($self) = @_;
+
+    my $conf = $self->get('conf')->{cache};
+    return $self->adaptor($conf);
+};
+
 register util => sub {
     my ($self) = @_;
 
@@ -10,11 +17,11 @@ register util => sub {
     return Zenra::Models::Util->new;
 };
 
-register cache => sub {
+register uuid => sub {
     my ($self) = @_;
 
-    my $conf = $self->get('conf')->{cache};
-    return $self->adaptor($conf);
+    $self->ensure_class_loaded('Data::UUID');
+    return Data::UUID->new;
 };
 
 register mecab => sub {

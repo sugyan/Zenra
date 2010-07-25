@@ -6,12 +6,17 @@ sub auto :Private {
     my ($self, $c) = @_;
 
     $c->detach('/default') unless $c->user;
+    my $token = $c->req->param('token');
+    unless ($token && $token eq $c->user->obj->token) {
+        $c->detach('/default');
+    }
 }
 
 sub process_statuses :Private {
     my ($self, $c, $statuses) = @_;
 
     my $zenra = $c->model('util')->zenra;
+    my $results = [];
     for my $status (@$statuses) {
         my $zenrized_text = $c->model('util')->zenrize(encode_utf8($status->{text}));
         my $params = {
@@ -31,8 +36,10 @@ sub process_statuses :Private {
         else {
             $params->{no_zenra} = 1;
         }
-        push @{ $c->stash->{json}{statuses} }, $params;
+        push @$results, $params;
     }
+
+    return $results;
 }
 
 sub end :Private {

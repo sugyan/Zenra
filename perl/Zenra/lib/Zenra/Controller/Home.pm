@@ -1,4 +1,4 @@
-package Zenra::Controller::User;
+package Zenra::Controller::Home;
 use Ark 'Controller';
 
 sub auto :Private {
@@ -8,11 +8,7 @@ sub auto :Private {
     $c->stash->{token} = $c->user->obj->token;
 }
 
-sub index :Path :Args(1) {
-    my ($self, $c, $args) = @_;
-
-    $c->stash->{screen_name} = $args;
-}
+sub index :Path :Args(0) {}
 
 __PACKAGE__->meta->make_immutable;
 

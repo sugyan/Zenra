@@ -5,8 +5,10 @@ all_from 'lib/Zenra.pm';
 requires 'Ark';
 
 requires 'Cache::FastMmap';
+requires 'Data::UUID';
 requires 'Date::Parse';
 requires 'DateTime::Format::MySQL';
+requires 'Digest::SHA1';
 requires 'Net::Twitter';
 requires 'Text::MeCab';
 requires 'Try::Tiny';
