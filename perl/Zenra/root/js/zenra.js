@@ -26,17 +26,22 @@ function status_template() {
 }
 
 function home_timeline() {
-    get_statuses("/api/home");
+    get_statuses($("#statuses"), "/api/home");
 }
 
 function user_timeline(screen_name) {
-    get_statuses("/api/user/" + screen_name);
+    get_statuses($("#statuses"), "/api/user/" + screen_name);
 }
 
-function get_statuses(api_url) {
+function get_statuses(container, api_url) {
+    container.html($("<img>").attr({
+        id : "loading",
+        src: "/img/loading.gif"
+    }));
     $.ajax({
         url: api_url,
         success: function(data) {
+            container.empty();
             var template = status_template();
             for (var i = 0; i < data.statuses.length; i++) {
                 var status  = data.statuses[i];
@@ -57,7 +62,7 @@ function get_statuses(api_url) {
                                     .text(status.created_at));
                 }
                 element.find("div.body span.status_text").html(status.text);
-                $("#statuses").append(element);
+                container.append(element);
             }
         },
         error: function() {

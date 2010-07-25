@@ -24,6 +24,11 @@ ul#statuses {
     position: relative;
 }
 
+img#loading {
+    display: block;
+    margin: auto;
+}
+
 li.status {
     padding: 5px;
     border-top: silver solid 1px;
