@@ -21,6 +21,10 @@ function status_template() {
     </div>\
     <span class="status_text" />\
   </div>\
+  <div class="buttons">\
+    <span class="heart"><img src="" height="19" width="25" /></span>\
+    <span class="tweet"><img src="/img/tweet.png" height="22" width="22" /></span>\
+  </div>\
 </li>\
 ');
 }
@@ -74,6 +78,7 @@ function get_statuses(container, token, api_url) {
                                     .text(status.created_at));
                 }
                 element.find("div.body span.status_text").html(status.text.replace(/全裸で/g, '<span class="zenra">$&</span>'));
+                element.find("span.heart img").attr({ src: "/img/heart_gray.png" });
                 container.append(element);
             }
         },

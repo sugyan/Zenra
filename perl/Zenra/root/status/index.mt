@@ -6,11 +6,9 @@
   <div class="status">
     <span class="text"><?= $status->text ?></span>
 ? if ($c->user) {
-    <div class="spread">
-      <form class="spread_button<?= $c->stash->{spread} ? '_cancel' : '' ?>" action="/spread" method="post">
-        <input type="hidden" name="id" value="<?= $status->id ?>" />
-        <input type="submit" value="<?= $c->stash->{spread} ? '取り消す' : '拡散する' ?>" />
-      </form>
+    <div class="buttons">
+      <span class="heart"><img src="/img/heart_gray.png" height="19" width="25" /></span>\
+      <span class="tweet"><img src="/img/tweet.png" height="22" width="22" /></span>\
     </div>
 ? }
     <span class="meta"><?= $status->created_at->strftime('%Y/%m/%d %H:%M:%S') ?></span>
