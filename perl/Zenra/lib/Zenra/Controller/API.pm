@@ -31,7 +31,6 @@ sub process_statuses :Private {
         if ($zenrized_text =~ $zenra) {
             my $status = $c->model('Schema::Status')->update_or_create({ %$params });
             $params->{spread} = ($c->user && $status->users->find($c->user->obj->id)) ? 1 : 0;
-            $params->{text} =~ s!全裸で!<span class="zenra">全裸で</span>!g;
         }
         else {
             $params->{no_zenra} = 1;

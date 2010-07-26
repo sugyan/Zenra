@@ -73,7 +73,7 @@ function get_statuses(container, token, api_url) {
                                     .attr({ href: "/status/" + status.id })
                                     .text(status.created_at));
                 }
-                element.find("div.body span.status_text").html(status.text);
+                element.find("div.body span.status_text").html(status.text.replace(/全裸で/g, '<span class="zenra">$&</span>'));
                 container.append(element);
             }
         },
