@@ -20,11 +20,11 @@
       <div class="name"><?= $status->name ?></div>
     </div>
   </div>
-  <div class="spreaders">
+  <div class="favorites">
     <ul>
-? while (my $spread =  $c->stash->{spreads}->next) {
+? while (my $favorite = $c->stash->{favorites}->next) {
       <li>
-        <a href="/user/<?= $spread->user->screen_name ?>">@<?= $spread->user->screen_name ?></a> が <?= $spread->created_at->strftime('%Y/%m/%d %H:%M:%S') ?> に拡散しました
+        <a href="/user/<?= $favorite->user->screen_name ?>">@<?= $favorite->user->screen_name ?></a> が <?= $favorite->created_at->strftime('%Y/%m/%d %H:%M:%S') ?> に拡散しました
       </li>
 ? }
     </ul>

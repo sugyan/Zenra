@@ -1,14 +1,17 @@
-package Zenra::Schema::Result::Spread;
+package Zenra::Schema::Result::Favorite;
 use strict;
 use warnings;
 use base 'Zenra::Schema::ResultBase';
 use DateTime;
 
-__PACKAGE__->table('spread');
+__PACKAGE__->table('favorite');
 __PACKAGE__->add_columns(
     id => {
-        data_type   => 'BIGINT',
+        data_type   => 'INTEGER',
         is_nullable => 0,
+        extra => {
+            unsigned => 1,
+        },
     },
     user => {
         data_type   => 'INTEGER',
@@ -20,12 +23,6 @@ __PACKAGE__->add_columns(
     status => {
         data_type   => 'BIGINT',
         is_nullable => 0,
-    },
-    shorten => {
-        data_type     => 'TINYINT',
-        size          => 1,
-        is_nullable   => 1,
-        default_value => 0,
     },
     created_at => {
         data_type   => 'DATETIME',

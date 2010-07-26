@@ -46,7 +46,7 @@ __PACKAGE__->add_columns(
     },
 );
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->has_many(spreads => 'Zenra::Schema::Result::Spread', 'status');
-__PACKAGE__->many_to_many(users => 'spreads', 'user');
+__PACKAGE__->has_many(favorites => 'Zenra::Schema::Result::Favorite', 'status');
+__PACKAGE__->many_to_many(users => 'favorites', 'user');
 
 1;

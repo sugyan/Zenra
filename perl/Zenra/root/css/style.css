@@ -106,12 +106,12 @@ div.icon img {
     height: 48px;
 }
 
-div.spreaders ul {
+div.favorites ul {
     font-size: small;
     color: gray;
 }
 
-div.spreaders ul a {
+div.favorites ul a {
     color: #000080;
     text-decoration: none;
 }

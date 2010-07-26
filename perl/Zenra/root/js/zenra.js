@@ -1,9 +1,3 @@
-// $(function() {
-//     $(".spread_button").click(function() {
-//         return confirm("OAuthを使ってあなたのアカウントでつぶやきます。\nよろしいですか？");
-//     });
-// });
-
 function status_template() {
     return $('\
 <li class="status">\

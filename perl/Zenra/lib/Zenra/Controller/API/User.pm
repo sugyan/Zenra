@@ -1,6 +1,7 @@
 package Zenra::Controller::API::User;
 use Ark 'Controller';
 use Try::Tiny;
+use Encode qw/encode_utf8 decode_utf8/;
 
 sub index :Path :Args(1) {
     my ($self, $c, $args) = @_;
@@ -21,6 +22,8 @@ sub index :Path :Args(1) {
     if ($statuses) {
         $c->stash->{json}{statuses}  = $c->forward('/api/process_statuses', $statuses);
         $c->stash->{json}{user_info} = $statuses->[0]{user};
+        my $description = $c->model('util')->zenrize(encode_utf8($c->stash->{json}{user_info}{description}));
+        $c->stash->{json}{user_info}{description} = decode_utf8($description),
     }
     $c->stash->{json}{remaining} = $tw->rate_remaining;
 }

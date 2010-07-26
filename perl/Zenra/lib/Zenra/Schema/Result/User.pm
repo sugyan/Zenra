@@ -46,6 +46,8 @@ __PACKAGE__->add_columns(
     },
 );
 __PACKAGE__->set_primary_key('id');
+__PACKAGE__->has_many(favorites => 'Zenra::Schema::Result::Favorite', 'user');
+__PACKAGE__->many_to_many(statuses => 'favorites', 'status');
 
 sub insert {
     my $self = shift;
