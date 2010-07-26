@@ -69,9 +69,15 @@ function get_statuses(container, token, api_url) {
                     .attr({ href: "/user/" + status.screen_name })
                     .text("@" + status.screen_name);
                 var created_at = element.find("span.created_at");
-                if (status.no_zenra) {
-                    element.addClass("no_zenra");
+                if (status.no_zenra || status.protected) {
                     created_at.text(status.created_at);
+                    if (status.no_zenra) {
+                        element.addClass("no_zenra");
+                    }
+                    if (status.protected) {
+                        created_at.after($("<img>").attr({ src: "/img/lock.gif" }))
+                    }
+                    element.find("div.buttons").remove();
                 } else {
                     created_at.html($("<a>")
                                     .attr({ href: "/status/" + status.id })
