@@ -1,6 +1,7 @@
 package Zenra::Models::Util;
 use Any::Moose;
 use Zenra::Models;
+use Encode qw/encode_utf8 decode_utf8/;
 
 has zenra => (
     is  => 'ro',
@@ -12,14 +13,21 @@ sub zenrize {
     my ($self, $text) = @_;
 
     # 既に含まれていればそれ以上何もしない
-    return $text if $text =~ $self->zenra;
+    return $text if $self->zenrized($text);
 
+    $text = encode_utf8 $text;
     my $result = '';
     for my $sentence (split/(\s+)/, $text) {
         $result .= $sentence =~ /\s+/ ? $sentence : $self->_zenrize($sentence);
     }
 
-    return $result;
+    return decode_utf8 $result;
+}
+
+sub zenrized {
+    my ($self, $text) = @_;
+
+    return $text =~ decode_utf8 $self->zenra;
 }
 
 # 日本語の文章を全裸にする

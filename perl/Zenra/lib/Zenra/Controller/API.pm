@@ -1,6 +1,5 @@
 package Zenra::Controller::API;
 use Ark 'Controller';
-use Encode qw/encode_utf8 decode_utf8/;
 
 sub auto :Private {
     my ($self, $c) = @_;
@@ -18,17 +17,17 @@ sub process_statuses :Private {
     my $zenra = $c->model('util')->zenra;
     my $results = [];
     for my $status (@$statuses) {
-        my $zenrized_text = $c->model('util')->zenrize(encode_utf8($status->{text}));
+        my $zenrized_text = $c->model('util')->zenrize($status->{text});
         my $params = {
             id            => $status->{id},
-            text          => decode_utf8($zenrized_text),
+            text          => $zenrized_text,
             screen_name   => $status->{user}{screen_name},
             name          => $status->{user}{name},
             profile_image => $status->{user}{profile_image_url},
             protected     => $status->{user}{protected},
             created_at    => $c->model('parser')->($status->{created_at})->strftime('%Y/%m/%d %H:%M:%S'),
         };
-        if ($zenrized_text =~ $zenra) {
+        if ($c->model('util')->zenrized($zenrized_text)) {
             my $status = $c->model('Schema::Status')->update_or_create({ %$params });
             $params->{favorited} = ($c->user && $status->users->find($c->user->obj->id)) ? 1 : 0;
         }
