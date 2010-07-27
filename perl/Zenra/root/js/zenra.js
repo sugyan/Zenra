@@ -17,7 +17,7 @@ function status_template() {
   </div>\
   <div class="buttons">\
     <img class="heart" src="" />\
-    <img class="tweet" src="/img/tweet.png" height="22" width="22" />\
+    <!-- img class="tweet" src="/img/tweet.png" height="22" width="22" / -->\
   </div>\
 </li>\
 ');
