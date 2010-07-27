@@ -31,7 +31,7 @@
   </div>
 </div>
 <script type="text/javascript">
-var token = "<?= $c->user->obj->token ?>";
+var token = "<?= $c->user ? $c->user->obj->token : '' ?>";
 $(function () {
     var fav = $("#heart_button");
     if (fav) {
