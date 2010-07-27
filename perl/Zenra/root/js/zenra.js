@@ -1,6 +1,6 @@
 function status_template() {
     return $('\
-<li class="status">\
+<li class="status" id="">\
   <span class="profile_image">\
     <a href="">\
       <img src="" height="48" width="48" />\
@@ -16,22 +16,84 @@ function status_template() {
     <span class="status_text" />\
   </div>\
   <div class="buttons">\
-    <span class="heart"><img src="" height="19" width="25" /></span>\
-    <span class="tweet"><img src="/img/tweet.png" height="22" width="22" /></span>\
+    <img class="heart" src="" />\
+    <img class="tweet" src="/img/tweet.png" height="22" width="22" />\
   </div>\
 </li>\
 ');
 }
 
 function home_timeline() {
-    get_statuses($("#statuses"), token, "/api/home");
+    get_statuses($("#statuses"), "/api/home");
 }
 
 function user_timeline(screen_name) {
-    get_statuses($("#statuses"), token, "/api/user/" + screen_name);
+    get_statuses($("#statuses"), "/api/user/" + screen_name);
 }
 
-function get_statuses(container, token, api_url) {
+function fav_handler(status_id) {
+    return function() {
+        var target = $(this);
+        var prev_img = target.attr("src");
+        target.attr({ src: "/img/loading_mini.gif" });
+        $.ajax({
+            url:  "/api/favorite",
+            type: "POST",
+            data: {
+                id: status_id,
+                token: token
+            },
+            success: function(data) {
+                if (data.error) {
+                    target.attr({ src: prev_img });
+                    return;
+                }
+                if (data.result == "created") {
+                    target.attr({ src: "/img/heart_red.png" });
+                } else {
+                    target.attr({ src: "/img/heart_gray.png" });
+                }
+            },
+            error: function() {
+            }
+        });
+    };
+}
+
+function create_status_element(status) {
+    var element = status_template().clone();
+    element.attr({ id: status.id });
+    element.find("span.profile_image")
+        .find("a").attr({ href: "/user/" + status.screen_name })
+        .find("img").attr({ src: status.profile_image });
+    element.find("span.screen_name a")
+        .attr({ href: "/user/" + status.screen_name })
+        .text("@" + status.screen_name);
+    var created_at = element.find("span.created_at");
+    if (status.no_zenra || status.protected) {
+        created_at.text(status.created_at);
+        if (status.no_zenra) {
+            element.addClass("no_zenra");
+        }
+        if (status.protected) {
+            created_at.after($("<img>").attr({ src: "/img/lock.gif" }))
+        }
+        element.find("div.buttons").remove();
+    } else {
+        created_at.html($("<a>")
+                        .attr({ href: "/status/" + status.id })
+                        .text(status.created_at));
+        var heart = element.find("img.heart");
+        element.attr("id"),
+        heart.attr({ src: "/img/heart_" + (status.favorited ? "red" : "gray") + ".png" })
+            .click(fav_handler(status.id));
+    }
+    element.find("div.body span.status_text").html(status.text.replace(/全裸で/g, '<span class="zenra">$&</span>'));
+
+    return element;
+}
+
+function get_statuses(container, api_url) {
     container.html($("<img>").attr({
         id : "loading",
         src: "/img/loading.gif"
@@ -52,34 +114,8 @@ function get_statuses(container, token, api_url) {
                 $("#url").text(info.url);
                 $("#description").text(info.description);
             }
-            var template = status_template();
             for (var i = 0; i < data.statuses.length; i++) {
-                var status  = data.statuses[i];
-                var element = template.clone();
-                element.find("span.profile_image")
-                    .find("a").attr({ href: "/user/" + status.screen_name })
-                    .find("img").attr({ src: status.profile_image });
-                element.find("span.screen_name a")
-                    .attr({ href: "/user/" + status.screen_name })
-                    .text("@" + status.screen_name);
-                var created_at = element.find("span.created_at");
-                if (status.no_zenra || status.protected) {
-                    created_at.text(status.created_at);
-                    if (status.no_zenra) {
-                        element.addClass("no_zenra");
-                    }
-                    if (status.protected) {
-                        created_at.after($("<img>").attr({ src: "/img/lock.gif" }))
-                    }
-                    element.find("div.buttons").remove();
-                } else {
-                    created_at.html($("<a>")
-                                    .attr({ href: "/status/" + status.id })
-                                    .text(status.created_at));
-                }
-                element.find("div.body span.status_text").html(status.text.replace(/全裸で/g, '<span class="zenra">$&</span>'));
-                element.find("span.heart img").attr({ src: "/img/heart_gray.png" });
-                container.append(element);
+                container.append(create_status_element(data.statuses[i]));
             }
         },
         error: function() {

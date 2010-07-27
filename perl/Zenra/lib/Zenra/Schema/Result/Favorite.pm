@@ -9,6 +9,7 @@ __PACKAGE__->add_columns(
     id => {
         data_type   => 'INTEGER',
         is_nullable => 0,
+        is_auto_increment => 1,
         extra => {
             unsigned => 1,
         },

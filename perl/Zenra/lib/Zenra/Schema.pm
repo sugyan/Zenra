@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use base 'DBIx::Class::Schema';
 
-our $VERSION = '12';
+our $VERSION = '13';
 
 __PACKAGE__->load_namespaces;
 __PACKAGE__->load_components('Schema::Versioned');

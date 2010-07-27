@@ -5,7 +5,7 @@
 ? block content => sub {
 <ul id="statuses" />
 <script type="text/javascript">
-var token = "<?= $c->stash->{token} ?>";
+var token = "<?= $c->user->obj->token ?>";
 $(function () {
     home_timeline();
 });

@@ -64,7 +64,7 @@ register Schema => sub {
     return Zenra::Schema->connect(@$conf);
 };
 
-for my $table (qw/Status/) {
+for my $table (qw/Status Favorite/) {
     register "Schema::$table" => sub {
         my ($self) = @_;
         $self->get('Schema')->resultset($table);

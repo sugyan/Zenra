@@ -15,7 +15,7 @@ sub index :Path :Args(1) {
     } catch {
         my $error = $_;
         $c->log(error => $error);
-        $c->stash->{json}{error} = $error->message;
+        $c->stash->{json}{error} = ref $error;
     };
 
     if ($statuses) {

@@ -4,7 +4,7 @@
 <ul>
   <li>Twitter OAuthを使います。
   <li>
-    <a href="/login">ログイン</a>するとあなたのタイムラインをちょっと全裸にします。<br />
+    <a href="/login">OAuthでログイン</a>するとあなたのタイムラインを取得して全裸にします。<br />
     参考：<a href="http://twitter.com/zenra_bot">全裸bot</a>
   </li>
   <li>4時に勝手に呟いたりはしません。</li>

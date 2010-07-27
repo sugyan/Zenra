@@ -1,6 +1,7 @@
 package Zenra::Controller::API;
 use Ark 'Controller';
 
+# ログインしていて、リクエストパラメータにvalidなtokenが含まれていること
 sub auto :Private {
     my ($self, $c) = @_;
 
@@ -34,6 +35,12 @@ sub process_statuses :Private {
         else {
             $params->{no_zenra} = 1;
         }
+        my $fav = $c->model('Schema::Favorite')->find({
+            user   => $c->user->obj->id,
+            status => $status->{id},
+        }, 'user_status');
+        $params->{favorited} = $fav ? 1 : 0;
+
         push @$results, $params;
     }
 
