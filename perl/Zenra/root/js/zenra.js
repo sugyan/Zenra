@@ -38,7 +38,7 @@ function favorites() {
 
 function fav_handler() {
     var target = $(this);
-    var status_id = target.closest("li.status").attr("id");
+    var status_id = target.closest(".status").attr("id");
     var prev_img  = target.attr("src");
     target.attr({ src: "/img/loading_mini.gif" });
     $.ajax({

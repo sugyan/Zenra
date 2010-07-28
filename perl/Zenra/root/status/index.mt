@@ -3,12 +3,12 @@
 ? my $status = $c->stash->{status};
 ? block content => sub {
 <div id="content">
-  <div class="status">
+  <div class="status" id="<?= $status->id ?>">
     <span class="text"><?= raw_string($status->text) ?></span>
 ? if ($c->user) {
     <div class="buttons">
       <img id="heart_button" src="/img/heart_<?= $c->stash->{favorited} ? 'red' : 'gray' ?>.png" height="19" width="25" />
-      <!-- img src="/img/tweet.png" height="22" width="22" / -->
+      <img id="tweet_button" src="/img/tweet.png" height="22" width="22" />
     </div>
 ? }
     <span class="meta"><?= $status->created_at->strftime('%Y/%m/%d %H:%M:%S') ?></span>
@@ -33,10 +33,8 @@
 <script type="text/javascript">
 var token = "<?= $c->user ? $c->user->obj->token : '' ?>";
 $(function () {
-    var fav = $("#heart_button");
-    if (fav) {
-        fav.click(fav_handler(<?= $status->id ?>));
-    }
+    $("#heart_button").click(fav_handler);
+    $("#tweet_button").click(twe_handler);
 });
 </script>
 ? }
