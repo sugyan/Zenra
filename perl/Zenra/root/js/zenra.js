@@ -17,7 +17,7 @@ function status_template() {
   </div>\
   <div class="buttons">\
     <img class="heart" src="" />\
-    <!-- img class="tweet" src="/img/tweet.png" height="22" width="22" / -->\
+    <img class="tweet" src="/img/tweet.png" height="22" width="22" />\
   </div>\
 </li>\
 ');
@@ -31,33 +31,57 @@ function user_timeline(screen_name) {
     get_statuses($("#statuses"), "/api/user/" + screen_name);
 }
 
-function fav_handler(status_id) {
-    return function() {
-        var target = $(this);
-        var prev_img = target.attr("src");
-        target.attr({ src: "/img/loading_mini.gif" });
-        $.ajax({
-            url:  "/api/favorite",
-            type: "POST",
-            data: {
-                id: status_id,
-                token: token
-            },
-            success: function(data) {
-                if (data.error) {
-                    target.attr({ src: prev_img });
-                    return;
-                }
-                if (data.result == "created") {
-                    target.attr({ src: "/img/heart_red.png" });
-                } else {
-                    target.attr({ src: "/img/heart_gray.png" });
-                }
-            },
-            error: function() {
+function fav_handler() {
+    var target = $(this);
+    var status_id = target.closest("li.status").attr("id");
+    var prev_img  = target.attr("src");
+    target.attr({ src: "/img/loading_mini.gif" });
+    $.ajax({
+        url:  "/api/favorite",
+        type: "POST",
+        data: {
+            id: status_id,
+            token: token
+        },
+        success: function(data) {
+            if (data.error) {
+                return;
             }
-        });
-    };
+            if (data.result == "created") {
+                target.attr({ src: "/img/heart_red.png" });
+            } else {
+                target.attr({ src: "/img/heart_gray.png" });
+            }
+        },
+        complete: function() {
+            target.attr({ src: prev_img });
+        }
+    });
+}
+
+function twe_handler(status_id) {
+    console.log(status_id);
+    if (! confirm("OAuthを使用して、あなたのアカウントでTweetします。\nよろしいですか？")) {
+        return false;
+    }
+    var target = $(this);
+    var status_id = target.closest("li.status").attr("id");
+    var prev_img  = target.attr("src");
+    target.attr({ src: "/img/loading.gif" });
+    $.ajax({
+        url: "/api/tweet",
+        type: "POST",
+        data: {
+            id: status_id,
+            token: token
+        },
+        success: function(data) {
+            target.attr({ src: "img/tweet_done.png" });
+        },
+        error: function() {
+            target.attr({ src: prev_img });
+        }
+    });
 }
 
 function create_status_element(status) {
@@ -84,9 +108,10 @@ function create_status_element(status) {
                         .attr({ href: "/status/" + status.id })
                         .text(status.created_at));
         var heart = element.find("img.heart");
-        element.attr("id"),
         heart.attr({ src: "/img/heart_" + (status.favorited ? "red" : "gray") + ".png" })
-            .click(fav_handler(status.id));
+        heart.click(fav_handler);
+        var tweet = element.find("img.tweet");
+        tweet.click(twe_handler);
     }
     element.find("div.body span.status_text").html(status.text.replace(/全裸で/g, '<span class="zenra">$&</span>'));
 
