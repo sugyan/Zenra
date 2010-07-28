@@ -31,6 +31,11 @@ function user_timeline(screen_name) {
     get_statuses($("#statuses"), "/api/user/" + screen_name);
 }
 
+function favorites() {
+    $("img.heart").click(fav_handler);
+    $("img.tweet").click(twe_handler);
+}
+
 function fav_handler() {
     var target = $(this);
     var status_id = target.closest("li.status").attr("id");

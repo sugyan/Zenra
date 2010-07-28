@@ -14,7 +14,8 @@
       <div id="top">
         <a href="/"><img src="/img/logo.png" /></a>
 ? if ($c->user) {
-        <a href="/home">home</a>
+        <a href="/home"><img src="/img/home.gif" width="23" height="23" />home</a>
+        <a href="/favorites"><img src="/img/heart_red.png" />favorites</a>
 ? }
       </div>
       <div id="user">
