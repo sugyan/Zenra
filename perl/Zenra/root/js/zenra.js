@@ -53,7 +53,7 @@ function fav_handler() {
                 target.attr({ src: "/img/heart_gray.png" });
             }
         },
-        complete: function() {
+        error: function() {
             target.attr({ src: prev_img });
         }
     });
