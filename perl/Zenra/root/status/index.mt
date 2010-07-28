@@ -4,7 +4,7 @@
 ? block content => sub {
 <div id="content">
   <div class="status">
-    <span class="text"><?= $status->text ?></span>
+    <span class="text"><?= raw_string($status->text) ?></span>
 ? if ($c->user) {
     <div class="buttons">
       <img id="heart_button" src="/img/heart_<?= $c->stash->{favorited} ? 'red' : 'gray' ?>.png" height="19" width="25" />
