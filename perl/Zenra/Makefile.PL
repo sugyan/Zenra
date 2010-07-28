@@ -12,6 +12,7 @@ requires 'Digest::SHA1';
 requires 'Net::Twitter';
 requires 'Text::MeCab';
 requires 'Try::Tiny';
+requires 'WebService::Simple';
 
 tests 't/*.t';
 

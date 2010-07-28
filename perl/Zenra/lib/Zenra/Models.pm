@@ -24,6 +24,14 @@ register uuid => sub {
     return Data::UUID->new;
 };
 
+register bitly => sub {
+    my ($self) = @_;
+
+    my $conf = $self->get('conf')->{bitly};
+    $self->ensure_class_loaded('WebService::Simple');
+    return WebService::Simple->new(%$conf);
+};
+
 register mecab => sub {
     my ($self) = @_;
 

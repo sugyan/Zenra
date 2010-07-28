@@ -5,8 +5,12 @@ my $home = Zenra::Models->get('home');
 return {
     domain => 'sugyan.sakura.ne.jp',
     bitly => {
-        login  => '****',
-        apiKey => '****'
+        base_url => 'http://api.bit.ly',
+        param => {
+            login    => '****',
+            apiKey   => '********',
+            format   => 'xml',
+        },
     },
     cache => {
         class => 'Cache::FastMmap',
