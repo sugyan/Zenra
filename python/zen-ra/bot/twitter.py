@@ -1,12 +1,11 @@
 #/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import base64
 import logging
 import random
 import re
 import yaml
-import urllib
+import oauth
 from datetime import datetime
 from model.ids import IDS
 from model.statuses import Statuses
@@ -24,23 +23,27 @@ class TwitBot:
         # config.yamlから設定情報を取得
         #     ---
         #     bot:
-        #       username: zenra_bot
-        #       password: ********
+        #       consumer_key: ****************
+        #       consumer_secret: ********************************
+        #       access_token: ****************************************
+        #       access_token_secret: ********************************
         config_data = yaml.load(open('../config.yaml'))
         self.bot_config = config_data['bot']
-        self.auth_header = {
-            'Authorization' : 'Basic ' + base64.b64encode(
-                '%s:%s' % (self.bot_config['username'], self.bot_config['password'])
-                )
-            }
+        self.client = oauth.TwitterClient(
+            self.bot_config['consumer_key'],
+            self.bot_config['consumer_secret'],
+            None)
 
     # 自分のfriendsのデータを更新する
     def friends(self):
         url = 'http://twitter.com/friends/ids.json'
-        result = urlfetch.fetch(
-            url     = url,
-            headers = self.auth_header,
-            )
+        result = self.client.make_request(
+            url,
+            token   = self.bot_config['access_token'],
+            secret  = self.bot_config['access_token_secret'],
+            additional_params = None,
+            protected         = True,
+            method            = urlfetch.GET)
         logging.debug(result.status_code)
         logging.debug(result.content)
         if result.status_code == 200:
@@ -51,10 +54,13 @@ class TwitBot:
     # 自分のfollowersのデータを更新する
     def followers(self):
         url = 'http://twitter.com/followers/ids.json'
-        result = urlfetch.fetch(
-            url     = url,
-            headers = self.auth_header,
-            )
+        result = self.client.make_request(
+            url,
+            token   = self.bot_config['access_token'],
+            secret  = self.bot_config['access_token_secret'],
+            additional_params = None,
+            protected         = True,
+            method            = urlfetch.GET)
         logging.debug(result.status_code)
         logging.debug(result.content)
         if result.status_code == 200:
@@ -78,20 +84,24 @@ class TwitBot:
             if len(should_follow) > 0:
                 url = 'http://twitter.com/friendships/create/%s.json' % should_follow.pop()
                 logging.debug(url)
-                result = urlfetch.fetch(
-                    url     = url,
-                    method  = urlfetch.POST,
-                    headers = self.auth_header,
-                    )
+                result = self.client.make_request(
+                    url,
+                    token   = self.bot_config['access_token'],
+                    secret  = self.bot_config['access_token_secret'],
+                    additional_params = None,
+                    protected         = True,
+                    method            = urlfetch.POST)
                 if result.status_code != 200:
                     logging.warn(result.content)
             if len(should_unfollow) > 0:
                 url = 'http://twitter.com/friendships/destroy/%s.json' % should_unfollow.pop()
-                result = urlfetch.fetch(
-                    url     = url,
-                    method  = urlfetch.POST,
-                    headers = self.auth_header,
-                    )
+                result = self.client.make_request(
+                    url,
+                    token   = self.bot_config['access_token'],
+                    secret  = self.bot_config['access_token_secret'],
+                    additional_params = None,
+                    protected         = True,
+                    method            = urlfetch.POST)
                 if result.status_code != 200:
                     logging.warn(result.content)
 
@@ -101,16 +111,17 @@ class TwitBot:
         if not status:
             status = random.choice(Statuses.all().fetch(1000)).status
         url  = 'http://twitter.com/statuses/update.json'
-        data = urllib.urlencode({
-                'status' : status.encode('utf-8'),
-                'in_reply_to_status_id' : in_reply_to,
-                })
-        result = urlfetch.fetch(
-            url     = url,
-            method  = urlfetch.POST,
-            payload = data,
-            headers = self.auth_header,
-            )
+        data = {
+            'status' : status.encode('utf-8'),
+            'in_reply_to_status_id' : in_reply_to,
+            }
+        result = self.client.make_request(
+            url,
+            token   = self.bot_config['access_token'],
+            secret  = self.bot_config['access_token_secret'],
+            additional_params = data,
+            protected         = True,
+            method            = urlfetch.POST)
         logging.debug(result.status_code)
         logging.debug(result.content)
 
@@ -121,11 +132,14 @@ class TwitBot:
             logging.debug('count: %d' % cache)
             return
 
-        url = 'http://twitter.com/statuses/friends_timeline.json?count=150'
-        result = urlfetch.fetch(
-            url     = url,
-            headers = self.auth_header,
-            )
+        url = 'https://api.twitter.com/statuses/friends_timeline.json'
+        result = self.client.make_request(
+            url,
+            token   = self.bot_config['access_token'],
+            secret  = self.bot_config['access_token_secret'],
+            additional_params = { "count": 150 },
+            protected         = True,
+            method            = urlfetch.GET)
         logging.debug(result.status_code)
         if result.status_code == 200:
             statuses = simplejson.loads(result.content)
