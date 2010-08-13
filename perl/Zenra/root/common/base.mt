@@ -27,7 +27,7 @@
 ?     }
 <a href="/logout">ログアウト</a><br />
 ? } else {
-<a href="/login">OAuthでログインする</a><br />
+<a href="/login"><img src="/img/sign-in-with-twitter-l.png" /></a><br />
 ? }
       </div>
     </div>

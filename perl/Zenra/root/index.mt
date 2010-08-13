@@ -16,4 +16,7 @@
   <dt>ソースコード</dt>
     <dd><a href="http://github.com/sugyan/Zenra/tree/master/perl/Zenra/">github</a></dd>
 </dl>
+
+<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+
 ? }
