@@ -10,7 +10,7 @@ cron:
   schedule: every 10 minutes
 - description: update myself
   url: /bot/twitter?action=update
-  schedule: every 10 hours
+  schedule: every 30 hours
 - description: zenrize friends' status
   url: /bot/twitter?action=zenrize
   schedule: every 1 minutes
